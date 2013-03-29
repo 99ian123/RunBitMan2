@@ -1,4 +1,3 @@
-
 import java.awt.*;
 
 import javax.swing.*;
@@ -159,7 +158,7 @@ public class main2 extends JFrame implements Runnable {
 			falling = true;
 		
 		else
-			falling = true;
+			falling = false;
 
 		if( rightKeyPressed ) {
 			headX += velocityX;
