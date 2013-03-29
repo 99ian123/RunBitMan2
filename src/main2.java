@@ -1,5 +1,4 @@
 import java.awt.*;
-
 import javax.swing.*;
 import java.awt.event.*;
 public class main2 extends JFrame implements Runnable {
