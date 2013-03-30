@@ -342,30 +342,21 @@ public class MainThread implements Runnable {
 			counter = 0;
 		}
 
-		if (bodyStartY >= 380) {
-			bodyStartY = 380;
-		}
-
-		if (bodyEndY >= 400) {
-			bodyEndY = 400;
-		}
-
-		if (armStartY >= 390) {
-			armStartY = 390;
-		}
-
-		if (armEndY >= 390) {
-			armEndY = 390;
-		}
-
-		if (rightLegEndY >= 400) {
-			rightLegEndY = 400;
-		}
-
-		if (leftLegEndY >= 410) {
-			leftLegEndY = 410;
-		}
-
+		 if( leftLegEndY >= 394 && leftLegEndY <= 410 && ( leftLegEndX <= 169 || rightLegEndX >= 210 )) {
+                        
+                    headY = 359;
+                    bodyStartY = 369;
+                    bodyEndY = 384;
+                    armStartY = 378;
+                    armEndY = 378;
+                    rightLegEndY = 394;
+                    leftLegEndY = 394;
+                    
+                    falling = false;
+                    counter = 0;
+                }
+                else if( !jumpKeyPressed )
+                    falling = true;
 		if (falling) {
 			headY += velocityY;
 			bodyStartY += velocityY;
