@@ -2,7 +2,6 @@ package millstein.RunBitMan2;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -18,7 +17,7 @@ import javax.swing.JOptionPane;
  * Programme to <b>INSERT PURPOSE HERE</b>.
  * 
  * @author 99ian123
- * @author ifly6
+ * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs.
  * @since 29 March 2013
  */
 
@@ -28,56 +27,62 @@ import javax.swing.JOptionPane;
  * TODO Add a background or something (it makes it look better)
  * 
  * TODO Split into more than one class for maintenance purposes.
- *
- * TODO Fix platform issue.
  */
 
 public class MainThread implements Runnable {
 	/*
-	Here is where I implemented all of the integers and variables which I use
-	in the rest of the program.
-	*/
+	 * Here is where I implemented all of the integers and variables which I use
+	 * in the rest of the program.
+	 */
 
 	// Graphics
 	public Graphics dbg;
-	public int bluHeadX = 225, bluHeadY = 369;
-	public int magHeadX = 285, magHeadY = 479;
-	public int blaHeadX = 70, blaHeadY = 369;
-	public int oraHeadX = 520, oraHeadY = 354;
-	public int headX = 292, headY = 215;
-	public int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
+	protected int bluHeadX = 225, bluHeadY = 369;
+	protected int magHeadX = 285, magHeadY = 479;
+	protected int blaHeadX = 70, blaHeadY = 369;
+	protected int oraHeadX = 520, oraHeadY = 354;
+	protected int headX = 292, headY = 215;
+	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
 			bodyEndY = 240;
-	public int armStartX = 292, armStartY = 234, armEndX = 302, armEndY = 234;
-	public int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
+	protected int armStartX = 292, armStartY = 234, armEndX = 302,
+			armEndY = 234;
+	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
 			leftLegEndY = 249;
-	public int Block = 500;
+	protected int Block = 500;
 
 	// Controls
-	public boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
-	public float velocityX = 5, velocityY = 5, gravity = 0.5f;
-	public int counter;
-	public int direction;
-	public int direction1;
-	public int direction2;
-	public int direction3;
+	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
+	protected float velocityX = 5, velocityY = 5, gravity = 0.5f;
+	protected int counter;
+	protected int direction;
+	protected int direction1;
+	protected int direction2;
+	protected int direction3;
 
 	// Screen
-	public static JFrame frame = new JFrame();
-	public Image dbImage = null;
-	public int dbHeight = 600, dbWidth = 600;
-	public int score, life = 3;
-	public Container container;
+	protected static JFrame frame = new JFrame();
+	protected Image dbImage = null;
+	protected int dbHeight = 600, dbWidth = 600;
+	protected int score, life = 3;
+	protected Container container;
 
 	// Program
-	public boolean running;
-	public Thread animator;
+	protected boolean running;
+	protected Thread animator;
 
-	public MainThread() { // The Basic GUI Method. aka Sreen Size, Visiblilty, Layout, etc.
+	MainThread() { // Constructor
 
-		frame.setTitle("RunBitMan 2");
+		frame.setTitle("RunBitMan: II");
 		container = frame.getContentPane();
-		container.setLayout(new FlowLayout());
-		startGame();
+
+		Runnable startGame = new Runnable() {
+			@Override
+			public void run() {
+				startGame();
+			}
+		};
+		startGame.run();
+
 		KeyHandler handler = new KeyHandler();
 		frame.addKeyListener(handler);
 		frame.setSize(600, 600);
@@ -86,7 +91,7 @@ public class MainThread implements Runnable {
 	}
 
 	// Invoke Running
-	public void startGame() {
+	void startGame() {
 		if ((animator == null) || !running) {
 			animator = new Thread(this);
 			animator.start();
@@ -95,6 +100,9 @@ public class MainThread implements Runnable {
 
 	// Opens Screen
 	@Override
+	/**
+	 * Thread which calls the rendering, then the painting. It sets the frame rate, and the game opening systems.
+	 */
 	public void run() {
 		running = true;
 
@@ -103,21 +111,277 @@ public class MainThread implements Runnable {
 						+ "\nIt makes no claims to working perfectly.",
 				JOptionPane.WARNING_MESSAGE);
 
-		// While Loop to Repaint the Screen
-		while (running) {
-			gameRender();
-			paintScreen();
+		gameRenderObjects();
+		gameRenderMovement();
+		gameRenderMobs();
+		paintScreen();
+		// Give some time to prepare.
 
-			try {
-				Thread.sleep(25);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
+
+		// While Loop to Repaint the Screen
+		Runnable graphicsThread = new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					gameRenderObjects();
+					gameRenderMovement();
+					gameRenderMobs();
+					gameRenderHitbox(200);
+					paintScreen();
+
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+		};
+		graphicsThread.run();
+
+	}
+
+	/**
+	 * Thread and data to render the hit boxes of all the mobs and of the player
+	 * character.
+	 * 
+	 * @param pauseTime
+	 *            - amount of time the thread will pause for the
+	 */
+	public void gameRenderHitbox(final long pauseTime) {
+		Runnable MobThread = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
+						if ((rightLegEndY >= bluHeadY)
+								&& (rightLegEndY <= (bluHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+						}
+					}
+
+					if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
+						if ((rightLegEndY >= blaHeadY)
+								&& (rightLegEndY <= (blaHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
+						if ((rightLegEndY >= oraHeadY)
+								&& (rightLegEndY <= (oraHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
+						if ((rightLegEndY >= magHeadY)
+								&& (rightLegEndY <= (magHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
+						if ((rightLegEndY >= magHeadY)
+								&& (rightLegEndY <= (magHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+						}
+					}
+
+					if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+						if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
+							score++;
+
+							int randNum = (int) (Math.random() * 500);
+							if (randNum < 110) {
+								randNum = 110;
+							}
+							Block = randNum;
+						}
+					}
+				} catch (InterruptedException e) {
+				}
+			}
+		};
+		MobThread.run();
+	}
+
+	/**
+	 * Method renders all the Mobs in the Game.
+	 */
+	public void gameRenderMobs() {
+		dbg.setColor(Color.black);
+		dbg.drawString("Score: " + score, 25, 100);
+		dbg.drawString("Lives remaining: " + life, 25, 120);
+
+		// Mob Movement
+		if ((direction % 2) == 0) {
+			bluHeadX -= 4; // Speed
+		} else {
+			bluHeadX += 4;
+		}
+
+		if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
+			direction++;
+		}
+
+		if ((direction1 % 2) == 0) {
+			magHeadX -= 13; // Speed
+		} else {
+			magHeadX += 13;
+		}
+
+		if ((magHeadX <= 5) || (magHeadX >= 555)) {
+			direction1++;
+		}
+
+		if ((direction2 % 2) == 0) {
+			blaHeadX -= 3; // Speed
+		} else {
+			blaHeadX += 3;
+		}
+
+		if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
+			direction2++;
+		}
+
+		if ((direction3 % 2) == 0) {
+			oraHeadX -= 2.5; // Speed
+		} else {
+			oraHeadX += 2.5;
+		}
+
+		if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
+			direction3++;
 		}
 	}
 
-	// Animation Rendering and Key Logic
-	public void gameRender() {
+	/**
+	 * Renders movement of the player Character.
+	 */
+	public void gameRenderMovement() {
+		if (jumpKeyPressed && (counter <= 20)) {
+			headY -= velocityY;
+			bodyStartY -= velocityY;
+			bodyEndY -= velocityY;
+			armStartY -= velocityY;
+			armEndY -= velocityY;
+			rightLegEndY -= velocityY;
+			leftLegEndY -= velocityY;
+			counter++;
+		}
+
+		else if (jumpKeyPressed && (counter > 20)) {
+			jumpKeyPressed = false;
+		}
+
+		if (!jumpKeyPressed) {
+			falling = true;
+		} else {
+			falling = false;
+		}
+
+		if (rightKeyPressed) {
+			headX += velocityX;
+			bodyStartX += velocityX;
+			bodyEndX += velocityX;
+			armStartX += velocityX;
+			armEndX += velocityX;
+			rightLegEndX += velocityX;
+			leftLegEndX += velocityX;
+
+		}
+
+		if (leftKeyPressed) {
+			headX -= velocityX;
+			bodyStartX -= velocityX;
+			bodyEndX -= velocityX;
+			armStartX -= velocityX;
+			armEndX -= velocityX;
+			rightLegEndX -= velocityX;
+			leftLegEndX -= velocityX;
+		}
+
+		if (headY >= 360) {
+			headY = 360;
+			falling = false;
+			counter = 0;
+		}
+
+		if (bodyStartY >= 380) {
+			bodyStartY = 380;
+		}
+
+		if (bodyEndY >= 400) {
+			bodyEndY = 400;
+		}
+
+		if (armStartY >= 390) {
+			armStartY = 390;
+		}
+
+		if (armEndY >= 390) {
+			armEndY = 390;
+		}
+
+		if (rightLegEndY >= 400) {
+			rightLegEndY = 400;
+		}
+
+		if (leftLegEndY >= 410) {
+			leftLegEndY = 410;
+		}
+
+		if (falling) {
+			headY += velocityY;
+			bodyStartY += velocityY;
+			bodyEndY += velocityY;
+			armStartY += velocityY;
+			armEndY += velocityY;
+			rightLegEndY += velocityY;
+			leftLegEndY += velocityY;
+		}
+	}
+
+	/**
+	 * Renders the Objects.
+	 */
+	public void gameRenderObjects() {
 
 		if (dbImage == null) {
 			dbImage = frame.createImage(dbWidth, dbHeight);
@@ -126,7 +390,8 @@ public class MainThread implements Runnable {
 			}
 		}
 		// Graphics Method. Where all of the character/platforms are drawn.
-		// It's a bit confusing - some of the points are defined in the method above where I
+		// It's a bit confusing - some of the points are defined in the method
+		// above where I
 		// implemented everything.
 
 		dbg = dbImage.getGraphics();
@@ -172,257 +437,33 @@ public class MainThread implements Runnable {
 		dbg.setColor(Color.white);
 		dbg.drawOval(oraHeadX, oraHeadY, 30, 45);
 
-		dbg.setColor(Color.black); // BitMan - all the points are implemented in the top method.
+		dbg.setColor(Color.black); // BitMan - all the points are implemented in
+		// the top method.
 		dbg.drawOval(headX, headY, 10, 10);
 		dbg.drawLine(bodyStartX, bodyStartY, bodyEndX, bodyEndY);
 		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, leftLegEndX, leftLegEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
-		
-		// In the following, I implemented movement.
-
-		if (jumpKeyPressed && (counter <= 20)) { // Jumping
-			headY -= velocityY;
-			bodyStartY -= velocityY;
-			bodyEndY -= velocityY;
-			armStartY -= velocityY;
-			armEndY -= velocityY;
-			rightLegEndY -= velocityY;
-			leftLegEndY -= velocityY;
-			counter++;
-		}
-
-		else if (jumpKeyPressed && (counter > 20)) { 
-			jumpKeyPressed = false;
-		}
-
-		if (!jumpKeyPressed) {
-			falling = true;
-		} else {
-			falling = false;
-		}
-
-		if (rightKeyPressed) { // Moving Right
-			headX += velocityX;
-			bodyStartX += velocityX;
-			bodyEndX += velocityX;
-			armStartX += velocityX;
-			armEndX += velocityX;
-			rightLegEndX += velocityX;
-			leftLegEndX += velocityX;
-
-		}
-
-		if (leftKeyPressed) { // Moving Left
-			headX -= velocityX;
-			bodyStartX -= velocityX;
-			bodyEndX -= velocityX;
-			armStartX -= velocityX;
-			armEndX -= velocityX;
-			rightLegEndX -= velocityX;
-			leftLegEndX -= velocityX;
-		}
-		
-		// Player bounderies ( aka. where the different body parts can/can't go ).
-
-		if (headY >= 360) {
-			headY = 360;
-			falling = false;
-			counter = 0;
-		}
-
-		if (bodyStartY >= 380) {
-			bodyStartY = 380;
-		}
-
-		if (bodyEndY >= 400) {
-			bodyEndY = 400;
-		}
-
-		if (armStartY >= 390) {
-			armStartY = 390;
-		}
-
-		if (armEndY >= 390) {
-			armEndY = 390;
-		}
-
-		if (rightLegEndY >= 400) {
-			rightLegEndY = 400;
-		}
-
-		if (leftLegEndY >= 410) {
-			leftLegEndY = 410;
-		}
-
-		if (falling) {
-			headY += velocityY;
-			bodyStartY += velocityY;
-			bodyEndY += velocityY;
-			armStartY += velocityY;
-			armEndY += velocityY;
-			rightLegEndY += velocityY;
-			leftLegEndY += velocityY;
-		}
-
-		// HitBox Logic
-		// What happens if character touches monters/goal block.
-		
-		for (int i = 0; i <= 900; i++) {
-			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
-				if ((rightLegEndY >= bluHeadY)
-						&& (rightLegEndY <= (bluHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						JOptionPane.showMessageDialog(null,
-								"You Lose!\nYour high score was: " + score
-										+ " points", "Lost",
-								JOptionPane.WARNING_MESSAGE); // Message
-																// displayed
-																// when player
-																// dies
-						score = 0;
-						life = 3; // how many lives player starts with
-
-					}
-				}
-			}
-
-			if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
-				if ((rightLegEndY >= blaHeadY)
-						&& (rightLegEndY <= (blaHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
-				if ((rightLegEndY >= oraHeadY)
-						&& (rightLegEndY <= (oraHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-				}
-			}
-		}
-
-		for (int i = 0; i <= 225; i++) {
-
-			if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
-				if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
-					lost();
-					score++;
-
-					int randNum = (int) (Math.random() * 500);
-					if (randNum < 110) {
-						randNum = 110;
-					}
-					Block = randNum;
-					break;
-				}
-			}
-		}
-		
-		// The score and lives screen.
-		
-		dbg.setColor(Color.black);
-		dbg.drawString("Score: " + score, 25, 100);
-		dbg.drawString("Lives remaining: " + life, 25, 120);
-		
-		// The Speed of the various monsters, and where they can/can't go.
-		
-		if ((direction % 2) == 0) { // Blue Monster
-			bluHeadX -= 4; // Speed
-		} else {
-			bluHeadX += 4;
-		}
-
-		if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
-			direction++;
-		}
-
-		if ((direction1 % 2) == 0) { // Magenta Monster
-			magHeadX -= 13; // Speed
-		} else {
-			magHeadX += 13;
-		}
-
-		if ((magHeadX <= 5) || (magHeadX >= 555)) {
-			direction1++;
-		}
-
-		if ((direction2 % 2) == 0) { // Black Monster
-			blaHeadX -= 3; // Speed
-		} else {
-			blaHeadX += 3;
-		}
-
-		if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
-			direction2++;
-		}
-
-		if ((direction3 % 2) == 0) { // Oranger Monster
-			oraHeadX -= 2.5; // Speed
-		} else {
-			oraHeadX += 2.5;
-		}
-
-		if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
-			direction3++;
-		}
 	}
 
-	public void lost() { // Lost Method
-		try {
-			Thread.sleep(1500); // Time Before Respawn
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	/**
+	 * Resets the variables which are required when you lose.
+	 */
+	public void lost() {
 
-		// Respawn Position for BitMan
+		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
+				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE);
+
+		// Reset Possibly Stuck Keys
+		leftKeyPressed = false;
+		jumpKeyPressed = false;
+		rightKeyPressed = false;
+
+		// Reset Score and Lives
+		score = 0;
+		life = 3;
+
+		// Set Positions for Things
 		headX = 292;
 		headY = 215;
 		bodyStartX = 297;
@@ -440,8 +481,11 @@ public class MainThread implements Runnable {
 		direction = 0;
 	}
 
+	/**
+	 * Updates the screen with the new data provided by the many gameRender
+	 * methods.
+	 */
 	public void paintScreen() {
-
 		Graphics g;
 		try {
 			g = frame.getGraphics();
@@ -454,9 +498,21 @@ public class MainThread implements Runnable {
 		}
 	}
 
+	/**
+	 * Main.
+	 * 
+	 * @param args
+	 *            - No arguments are taken from the Main.
+	 */
 	public static void main(String[] args) {
 		// Construct Frame
-		new MainThread();
+		Runnable construct = new Runnable() {
+			@Override
+			public void run() {
+				new MainThread();
+			}
+		};
+		construct.run();
 
 		// Add Window Listener
 		frame.addWindowListener(new WindowAdapter() {
@@ -477,6 +533,10 @@ public class MainThread implements Runnable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+
+			if (e.getKeyCode() == KeyEvent.VK_Q) {
+				lost();
+			}
 
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
 				jumpKeyPressed = true;
