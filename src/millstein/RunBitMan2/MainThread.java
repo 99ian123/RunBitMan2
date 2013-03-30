@@ -14,10 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- * Programme to <b>INSERT PURPOSE HERE</b>.
+ * Programme to be a rudimentary game.
  * 
  * @author 99ian123
  * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs.
+ * @author kullalok - Consultant
+ * 
  * @since 29 March 2013
  */
 
@@ -30,10 +32,51 @@ import javax.swing.JOptionPane;
  */
 
 public class MainThread implements Runnable {
-	/*
-	 * Here is where I implemented all of the integers and variables which I use
-	 * in the rest of the program.
+
+	/**
+	 * Handles the Key pressing. Then sets system-wide data with stimuli, which
+	 * is read by while loop.
+	 * 
+	 * @author 99ian123
 	 */
+	private class KeyHandler extends KeyAdapter {
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+
+			if (e.getKeyCode() == KeyEvent.VK_Q) {
+				lost();
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				jumpKeyPressed = true;
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				rightKeyPressed = true;
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				leftKeyPressed = true;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				jumpKeyPressed = false;
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				rightKeyPressed = false;
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				leftKeyPressed = false;
+			}
+		}
+	}
 
 	// Graphics
 	public Graphics dbg;
@@ -48,31 +91,59 @@ public class MainThread implements Runnable {
 			armEndY = 234;
 	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
 			leftLegEndY = 249;
-	protected int Block = 500;
 
+	protected int Block = 500;
 	// Controls
 	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
 	protected float velocityX = 5, velocityY = 5, gravity = 0.5f;
 	protected int counter;
-	protected int direction;
-	protected int direction1;
-	protected int direction2;
-	protected int direction3;
+	protected int directionBlu;
+	protected int directionMag;
+	protected int directionBla;
 
+	protected int diredctionOra;
 	// Screen
 	protected static JFrame frame = new JFrame();
+
+	/**
+	 * Main.
+	 * 
+	 * @param args
+	 *            - No arguments are taken from the Main.
+	 */
+	public static void main(String[] args) {
+		// Construct Frame
+		Runnable construct = new Runnable() {
+			@Override
+			public void run() {
+				new MainThread();
+			}
+		};
+		construct.run();
+
+		// Add Window Listener
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+	}
+
 	protected Image dbImage = null;
 	protected int dbHeight = 600, dbWidth = 600;
+
 	protected int score, life = 3;
 	protected Container container;
 
 	// Program
 	protected boolean running;
+
 	protected Thread animator;
 
 	MainThread() { // Constructor
 
-		frame.setTitle("RunBitMan: II");
+		frame.setTitle("RunBitMan 2");
 		container = frame.getContentPane();
 
 		Runnable startGame = new Runnable() {
@@ -87,61 +158,6 @@ public class MainThread implements Runnable {
 		frame.addKeyListener(handler);
 		frame.setSize(600, 600);
 		frame.setVisible(true);
-
-	}
-
-	// Invoke Running
-	void startGame() {
-		if ((animator == null) || !running) {
-			animator = new Thread(this);
-			animator.start();
-		}
-	}
-
-	// Opens Screen
-	@Override
-	/**
-	 * Thread which calls the rendering, then the painting. It sets the frame rate, and the game opening systems.
-	 */
-	public void run() {
-		running = true;
-
-		JOptionPane.showMessageDialog(null, "RunBitMan 2",
-				"This is a testing programme."
-						+ "\nIt makes no claims to working perfectly.",
-				JOptionPane.WARNING_MESSAGE);
-
-		gameRenderObjects();
-		gameRenderMovement();
-		gameRenderMobs();
-		paintScreen();
-		// Give some time to prepare.
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-
-		// While Loop to Repaint the Screen
-		Runnable graphicsThread = new Runnable() {
-			@Override
-			public void run() {
-				while (running) {
-					gameRenderObjects();
-					gameRenderMovement();
-					gameRenderMobs();
-					gameRenderHitbox(200);
-					paintScreen();
-
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		graphicsThread.run();
 
 	}
 
@@ -250,44 +266,44 @@ public class MainThread implements Runnable {
 		dbg.drawString("Lives remaining: " + life, 25, 120);
 
 		// Mob Movement
-		if ((direction % 2) == 0) {
+		if ((directionBlu % 2) == 0) {
 			bluHeadX -= 4; // Speed
 		} else {
 			bluHeadX += 4;
 		}
 
 		if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
-			direction++;
+			directionBlu++;
 		}
 
-		if ((direction1 % 2) == 0) {
+		if ((directionMag % 2) == 0) {
 			magHeadX -= 13; // Speed
 		} else {
 			magHeadX += 13;
 		}
 
 		if ((magHeadX <= 5) || (magHeadX >= 555)) {
-			direction1++;
+			directionMag++;
 		}
 
-		if ((direction2 % 2) == 0) {
+		if ((directionBla % 2) == 0) {
 			blaHeadX -= 3; // Speed
 		} else {
 			blaHeadX += 3;
 		}
 
 		if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
-			direction2++;
+			directionBla++;
 		}
 
-		if ((direction3 % 2) == 0) {
+		if ((diredctionOra % 2) == 0) {
 			oraHeadX -= 2.5; // Speed
 		} else {
 			oraHeadX += 2.5;
 		}
 
 		if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
-			direction3++;
+			diredctionOra++;
 		}
 	}
 
@@ -337,34 +353,78 @@ public class MainThread implements Runnable {
 			leftLegEndX -= velocityX;
 		}
 
-		if (headY >= 360) {
-			headY = 360;
+		// Upper Platform
+		if ((leftLegEndY >= 245) && (leftLegEndY <= 275)) {
+
+			if ((leftLegEndX >= 275) && (leftLegEndX <= 325)) {
+				headY = 211;
+				bodyStartY = 221;
+				bodyEndY = 236;
+				armStartY = 230;
+				armEndY = 230;
+				rightLegEndY = 245;
+				leftLegEndY = 245;
+
+				falling = false;
+				counter = 0;
+			}
+		}
+
+		// Middle Platforms
+		if ((leftLegEndY >= 395) && (leftLegEndY <= 410)) {
+
+			if ((leftLegEndX >= 5) && (leftLegEndX <= 155)) {
+				headY = 360;
+				bodyStartY = 370;
+				bodyEndY = 385;
+				armStartY = 379;
+				armEndY = 379;
+				rightLegEndY = 395;
+				leftLegEndY = 395;
+
+				falling = false;
+				counter = 0;
+			}
+
+			if ((leftLegEndX >= 225) && (leftLegEndX <= 375)) {
+				headY = 360;
+				bodyStartY = 370;
+				bodyEndY = 385;
+				armStartY = 379;
+				armEndY = 379;
+				rightLegEndY = 395;
+				leftLegEndY = 395;
+
+				falling = false;
+				counter = 0;
+			}
+
+			if ((leftLegEndX >= 445) && (leftLegEndX <= 595)) {
+				headY = 360;
+				bodyStartY = 370;
+				bodyEndY = 385;
+				armStartY = 379;
+				armEndY = 379;
+				rightLegEndY = 395;
+				leftLegEndY = 395;
+
+				falling = false;
+				counter = 0;
+			}
+		}
+
+		// Lower Platform
+		if (leftLegEndY >= 495) {
+			headY = 460;
+			bodyStartY = 470;
+			bodyEndY = 485;
+			armStartY = 479;
+			armEndY = 479;
+			rightLegEndY = 495;
+			leftLegEndY = 495;
+
 			falling = false;
 			counter = 0;
-		}
-
-		if (bodyStartY >= 380) {
-			bodyStartY = 380;
-		}
-
-		if (bodyEndY >= 400) {
-			bodyEndY = 400;
-		}
-
-		if (armStartY >= 390) {
-			armStartY = 390;
-		}
-
-		if (armEndY >= 390) {
-			armEndY = 390;
-		}
-
-		if (rightLegEndY >= 400) {
-			rightLegEndY = 400;
-		}
-
-		if (leftLegEndY >= 410) {
-			leftLegEndY = 410;
 		}
 
 		if (falling) {
@@ -396,7 +456,7 @@ public class MainThread implements Runnable {
 
 		dbg = dbImage.getGraphics();
 
-		dbg.setColor(Color.white); // The Screen
+		dbg.setColor(Color.WHITE); // The Screen
 		dbg.fillRect(0, 0, dbWidth, dbHeight);
 
 		dbg.setColor(Color.green); // Left Platform
@@ -411,7 +471,7 @@ public class MainThread implements Runnable {
 		dbg.setColor(Color.green); // Bottom Platform
 		dbg.fillRect(5, 500, 590, 25);
 
-		dbg.setColor(Color.green);
+		dbg.setColor(Color.green); // Top Platform
 		dbg.fillRect(275, 250, 50, 25);
 
 		dbg.setColor(Color.yellow); // Goal Block
@@ -463,22 +523,22 @@ public class MainThread implements Runnable {
 		score = 0;
 		life = 3;
 
-		// Set Positions for Things
+		// Set Positions for Player Character
+		headY = 211;
+		bodyStartY = 221;
+		bodyEndY = 236;
+		armStartY = 230;
+		armEndY = 230;
+		rightLegEndY = 245;
+		leftLegEndY = 245;
+
 		headX = 292;
-		headY = 215;
 		bodyStartX = 297;
-		bodyStartY = 225;
 		bodyEndX = 297;
-		bodyEndY = 240;
 		armStartX = 292;
-		armStartY = 234;
 		armEndX = 302;
-		armEndY = 234;
 		rightLegEndX = 290;
-		rightLegEndY = 249;
 		leftLegEndX = 304;
-		leftLegEndY = 249;
-		direction = 0;
 	}
 
 	/**
@@ -498,73 +558,59 @@ public class MainThread implements Runnable {
 		}
 	}
 
+	// Opens Screen
+	@Override
 	/**
-	 * Main.
-	 * 
-	 * @param args
-	 *            - No arguments are taken from the Main.
+	 * Thread which calls the rendering, then the painting. It sets the frame rate, and the game opening systems.
 	 */
-	public static void main(String[] args) {
-		// Construct Frame
-		Runnable construct = new Runnable() {
-			@Override
-			public void run() {
-				new MainThread();
-			}
-		};
-		construct.run();
+	public void run() {
+		running = true;
 
-		// Add Window Listener
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-	}
+		JOptionPane.showMessageDialog(null, "RunBitMan 2",
+				"This is a testing programme."
+						+ "\nIt makes no claims to working perfectly.",
+				JOptionPane.WARNING_MESSAGE);
 
-	/**
-	 * Handles the Key pressing. Then sets system-wide data with stimuli, which
-	 * is read by while loop.
-	 * 
-	 * @author 99ian123
-	 */
-	private class KeyHandler extends KeyAdapter {
+		gameRenderObjects();
+		gameRenderMovement();
+		gameRenderMobs();
+		paintScreen();
+		// Give some time to prepare.
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-
-			if (e.getKeyCode() == KeyEvent.VK_Q) {
-				lost();
-			}
-
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				jumpKeyPressed = true;
-			}
-
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				rightKeyPressed = true;
-			}
-
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				leftKeyPressed = true;
-			}
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
 		}
 
-		@Override
-		public void keyReleased(KeyEvent e) {
+		// While Loop to Repaint the Screen
+		Runnable graphicsThread = new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					gameRenderObjects();
+					gameRenderMovement();
+					gameRenderHitbox(500);
 
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				jumpKeyPressed = false;
-			}
+					gameRenderMobs();
+					paintScreen();
 
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				rightKeyPressed = false;
+					try {
+						Thread.sleep(45);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+		};
+		graphicsThread.run();
 
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				leftKeyPressed = false;
-			}
+	}
+
+	// Invoke Running
+	void startGame() {
+		if ((animator == null) || !running) {
+			animator = new Thread(this);
+			animator.start();
 		}
 	}
 }
