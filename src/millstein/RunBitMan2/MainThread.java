@@ -31,6 +31,10 @@ import javax.swing.JOptionPane;
  */
 
 public class MainThread implements Runnable {
+	/*
+	Here is where I implemented all of the integers and variables which I use
+	in the rest of the program.
+	*/
 
 	// Graphics
 	public Graphics dbg;
@@ -66,7 +70,7 @@ public class MainThread implements Runnable {
 	public boolean running;
 	public Thread animator;
 
-	public MainThread() {
+	public MainThread() { // The Basic GUI Method. aka Sreen Size, Visiblilty, Layout, etc.
 
 		frame.setTitle("RunBitMan 2");
 		container = frame.getContentPane();
@@ -119,22 +123,25 @@ public class MainThread implements Runnable {
 				return;
 			}
 		}
+		// Graphics Method. Where all of the character/platforms are drawn.
+		// It's a bit confusing - some of the points are defined in the method above where I
+		// implemented everything.
 
 		dbg = dbImage.getGraphics();
 
-		dbg.setColor(Color.white); // screen
+		dbg.setColor(Color.white); // The Screen
 		dbg.fillRect(0, 0, dbWidth, dbHeight);
 
-		dbg.setColor(Color.green); // Platform
+		dbg.setColor(Color.green); // Left Platform
 		dbg.fillRect(5, 400, 150, 25);
 
-		dbg.setColor(Color.green);
+		dbg.setColor(Color.green); // Middle Platform
 		dbg.fillRect(225, 400, 150, 25);
 
-		dbg.setColor(Color.green);
+		dbg.setColor(Color.green); // Right Platform
 		dbg.fillRect(445, 400, 150, 25);
 
-		dbg.setColor(Color.green);
+		dbg.setColor(Color.green); // Bottom Platform
 		dbg.fillRect(5, 500, 590, 25);
 
 		dbg.setColor(Color.green);
@@ -163,7 +170,7 @@ public class MainThread implements Runnable {
 		dbg.setColor(Color.white);
 		dbg.drawOval(oraHeadX, oraHeadY, 30, 45);
 
-		dbg.setColor(Color.black); // BitMan
+		dbg.setColor(Color.black); // BitMan - all the points are implemented in the top method.
 		dbg.drawOval(headX, headY, 10, 10);
 		dbg.drawLine(bodyStartX, bodyStartY, bodyEndX, bodyEndY);
 		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
@@ -188,7 +195,7 @@ public class MainThread implements Runnable {
 		if (!jumpKeyPressed) {
 			falling = true;
 		} else {
-			falling = true;
+			falling = false;
 		}
 
 		if (rightKeyPressed) {
