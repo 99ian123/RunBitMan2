@@ -2,7 +2,6 @@ package millstein.RunBitMan2;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -18,7 +17,7 @@ import javax.swing.JOptionPane;
  * Programme to <b>INSERT PURPOSE HERE</b>.
  * 
  * @author 99ian123
- * @author ifly6
+ * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs.
  * @since 29 March 2013
  */
 
@@ -38,43 +37,43 @@ public class MainThread implements Runnable {
 
 	// Graphics
 	public Graphics dbg;
-	public int bluHeadX = 225, bluHeadY = 369;
-	public int magHeadX = 285, magHeadY = 479;
-	public int blaHeadX = 70, blaHeadY = 369;
-	public int oraHeadX = 520, oraHeadY = 354;
-	public int headX = 292, headY = 215;
-	public int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
+	protected int bluHeadX = 225, bluHeadY = 369;
+	protected int magHeadX = 285, magHeadY = 479;
+	protected int blaHeadX = 70, blaHeadY = 369;
+	protected int oraHeadX = 520, oraHeadY = 354;
+	protected int headX = 292, headY = 215;
+	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
 			bodyEndY = 240;
-	public int armStartX = 292, armStartY = 234, armEndX = 302, armEndY = 234;
-	public int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
+	protected int armStartX = 292, armStartY = 234, armEndX = 302,
+			armEndY = 234;
+	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
 			leftLegEndY = 249;
-	public int Block = 500;
+	protected int Block = 500;
 
 	// Controls
-	public boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
-	public float velocityX = 5, velocityY = 5, gravity = 0.5f;
-	public int counter;
-	public int direction;
-	public int direction1;
-	public int direction2;
-	public int direction3;
+	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
+	protected float velocityX = 5, velocityY = 5, gravity = 0.5f;
+	protected int counter;
+	protected int direction;
+	protected int direction1;
+	protected int direction2;
+	protected int direction3;
 
 	// Screen
-	public static JFrame frame = new JFrame();
-	public Image dbImage = null;
-	public int dbHeight = 600, dbWidth = 600;
-	public int score, life = 3;
-	public Container container;
+	protected static JFrame frame = new JFrame();
+	protected Image dbImage = null;
+	protected int dbHeight = 600, dbWidth = 600;
+	protected int score, life = 3;
+	protected Container container;
 
 	// Program
-	public boolean running;
-	public Thread animator;
+	protected boolean running;
+	protected Thread animator;
 
-	public MainThread() { // Constructor
+	MainThread() { // Constructor
 
-		frame.setTitle("RunBitMan 2");
+		frame.setTitle("RunBitMan: II");
 		container = frame.getContentPane();
-		container.setLayout(new FlowLayout());
 
 		Runnable startGame = new Runnable() {
 			@Override
@@ -92,7 +91,7 @@ public class MainThread implements Runnable {
 	}
 
 	// Invoke Running
-	public void startGame() {
+	void startGame() {
 		if ((animator == null) || !running) {
 			animator = new Thread(this);
 			animator.start();
@@ -109,84 +108,176 @@ public class MainThread implements Runnable {
 						+ "\nIt makes no claims to working perfectly.",
 				JOptionPane.WARNING_MESSAGE);
 
+		gameRenderObjects();
+		gameRenderMovement();
+		gameRenderMobs();
+		paintScreen();
+		// Give some time to prepare.
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
+
 		// While Loop to Repaint the Screen
 		while (running) {
-			gameRender();
+			gameRenderObjects();
+			gameRenderMovement();
+			gameRenderMobs();
 			paintScreen();
 
 			try {
-				Thread.sleep(25);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	// Animation Rendering and Key Logic
-	public void gameRender() {
+	public void gameRenderMobs() {
+		Runnable MobThread = new Runnable() {
+			@Override
+			public void run() {
 
-		if (dbImage == null) {
-			dbImage = frame.createImage(dbWidth, dbHeight);
-			if (dbImage == null) {
-				return;
+				long pauseTime = 500;
+				/*
+				 * if (difficulty == NORMAL) { pauseTime = 400; } if (difficulty
+				 * == HARD) { pauseTime = 150; }
+				 */
+				try {
+					if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
+						if ((rightLegEndY >= bluHeadY)
+								&& (rightLegEndY <= (bluHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+						}
+					}
+
+					if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
+						if ((rightLegEndY >= blaHeadY)
+								&& (rightLegEndY <= (blaHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
+						if ((rightLegEndY >= oraHeadY)
+								&& (rightLegEndY <= (oraHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
+						if ((rightLegEndY >= magHeadY)
+								&& (rightLegEndY <= (magHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+
+						}
+
+					}
+
+					if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
+						if ((rightLegEndY >= magHeadY)
+								&& (rightLegEndY <= (magHeadY + 30))) {
+							Thread.sleep(pauseTime);
+							life--;
+
+							if (life == 0) {
+								lost();
+							}
+						}
+					}
+
+					if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+						if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
+							score++;
+
+							int randNum = (int) (Math.random() * 500);
+							if (randNum < 110) {
+								randNum = 110;
+							}
+							Block = randNum;
+						}
+					}
+
+					dbg.setColor(Color.black);
+					dbg.drawString("Score: " + score, 25, 100);
+					dbg.drawString("Lives remaining: " + life, 25, 120);
+
+					// Mob Movement
+					if ((direction % 2) == 0) {
+						bluHeadX -= 4; // Speed
+					} else {
+						bluHeadX += 4;
+					}
+
+					if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
+						direction++;
+					}
+
+					if ((direction1 % 2) == 0) {
+						magHeadX -= 13; // Speed
+					} else {
+						magHeadX += 13;
+					}
+
+					if ((magHeadX <= 5) || (magHeadX >= 555)) {
+						direction1++;
+					}
+
+					if ((direction2 % 2) == 0) {
+						blaHeadX -= 3; // Speed
+					} else {
+						blaHeadX += 3;
+					}
+
+					if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
+						direction2++;
+					}
+
+					if ((direction3 % 2) == 0) {
+						oraHeadX -= 2.5; // Speed
+					} else {
+						oraHeadX += 2.5;
+					}
+
+					if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
+						direction3++;
+					}
+				} catch (InterruptedException e) {
+				}
 			}
-		}
-		// Graphics Method. Where all of the character/platforms are drawn.
-		// It's a bit confusing - some of the points are defined in the method
-		// above where I
-		// implemented everything.
+		};
+		MobThread.run();
+	}
 
-		dbg = dbImage.getGraphics();
-
-		dbg.setColor(Color.white); // The Screen
-		dbg.fillRect(0, 0, dbWidth, dbHeight);
-
-		dbg.setColor(Color.green); // Left Platform
-		dbg.fillRect(5, 400, 150, 25);
-
-		dbg.setColor(Color.green); // Middle Platform
-		dbg.fillRect(225, 400, 150, 25);
-
-		dbg.setColor(Color.green); // Right Platform
-		dbg.fillRect(445, 400, 150, 25);
-
-		dbg.setColor(Color.green); // Bottom Platform
-		dbg.fillRect(5, 500, 590, 25);
-
-		dbg.setColor(Color.green);
-		dbg.fillRect(275, 250, 50, 25);
-
-		dbg.setColor(Color.yellow); // Goal Block
-		dbg.fillRect(Block, 385, 15, 15);
-
-		dbg.setColor(Color.blue); // Blue Monster
-		dbg.fillOval(bluHeadX, bluHeadY, 30, 30);
-		dbg.setColor(Color.white);
-		dbg.drawRect(bluHeadX, bluHeadY, 30, 30);
-
-		dbg.setColor(Color.magenta); // Magenta Monster
-		dbg.fillRect(magHeadX, magHeadY, 40, 20);
-		dbg.setColor(Color.white);
-		dbg.drawRect(magHeadX, magHeadY, 40, 20);
-
-		dbg.setColor(Color.black); // Black Monster
-		dbg.fillRect(blaHeadX, blaHeadY, 30, 30);
-		dbg.setColor(Color.white);
-		dbg.drawRect(blaHeadX, blaHeadY, 30, 30);
-
-		dbg.setColor(Color.orange); // Orange Monster
-		dbg.fillOval(oraHeadX, oraHeadY, 30, 45);
-		dbg.setColor(Color.white);
-		dbg.drawOval(oraHeadX, oraHeadY, 30, 45);
-
-		dbg.setColor(Color.black); // BitMan - all the points are implemented in
-									// the top method.
-		dbg.drawOval(headX, headY, 10, 10);
-		dbg.drawLine(bodyStartX, bodyStartY, bodyEndX, bodyEndY);
-		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
-		dbg.drawLine(bodyEndX, bodyEndY, leftLegEndX, leftLegEndY);
-		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
-
+	/**
+	 * Renders movement of the player Character.
+	 */
+	public void gameRenderMovement() {
 		if (jumpKeyPressed && (counter <= 20)) {
 			headY -= velocityY;
 			bodyStartY -= velocityY;
@@ -268,149 +359,85 @@ public class MainThread implements Runnable {
 			rightLegEndY += velocityY;
 			leftLegEndY += velocityY;
 		}
+	}
 
-		// HitBox Logic
-		for (int i = 0; i <= 900; i++) {
-			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
-				if ((rightLegEndY >= bluHeadY)
-						&& (rightLegEndY <= (bluHeadY + 30))) {
+	/**
+	 * Renders the Objects. Should only be called once or twice.
+	 */
+	public void gameRenderObjects() {
 
-					lost();
-					life--;
-
-					if (life == 0) {
-						lost();
-					}
-				}
-			}
-
-			if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
-				if ((rightLegEndY >= blaHeadY)
-						&& (rightLegEndY <= (blaHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
-				if ((rightLegEndY >= oraHeadY)
-						&& (rightLegEndY <= (oraHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-
-				}
-
-			}
-
-			if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-					lost();
-					life--;
-
-					if (life == 0) {
-						MainThread.main(null);
-					}
-				}
+		if (dbImage == null) {
+			dbImage = frame.createImage(dbWidth, dbHeight);
+			if (dbImage == null) {
+				return;
 			}
 		}
+		// Graphics Method. Where all of the character/platforms are drawn.
+		// It's a bit confusing - some of the points are defined in the method
+		// above where I
+		// implemented everything.
 
-		for (int i = 0; i <= 225; i++) {
+		dbg = dbImage.getGraphics();
 
-			if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
-				if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
-					lost();
-					score++;
+		dbg.setColor(Color.white); // The Screen
+		dbg.fillRect(0, 0, dbWidth, dbHeight);
 
-					int randNum = (int) (Math.random() * 500);
-					if (randNum < 110) {
-						randNum = 110;
-					}
-					Block = randNum;
-					break;
-				}
-			}
-		}
-		dbg.setColor(Color.black);
-		dbg.drawString("Score: " + score, 25, 100);
-		dbg.drawString("Lives remaining: " + life, 25, 120);
+		dbg.setColor(Color.green); // Left Platform
+		dbg.fillRect(5, 400, 150, 25);
 
-		if ((direction % 2) == 0) {
-			bluHeadX -= 4; // Speed
-		} else {
-			bluHeadX += 4;
-		}
+		dbg.setColor(Color.green); // Middle Platform
+		dbg.fillRect(225, 400, 150, 25);
 
-		if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
-			direction++;
-		}
+		dbg.setColor(Color.green); // Right Platform
+		dbg.fillRect(445, 400, 150, 25);
 
-		if ((direction1 % 2) == 0) {
-			magHeadX -= 13; // Speed
-		} else {
-			magHeadX += 13;
-		}
+		dbg.setColor(Color.green); // Bottom Platform
+		dbg.fillRect(5, 500, 590, 25);
 
-		if ((magHeadX <= 5) || (magHeadX >= 555)) {
-			direction1++;
-		}
+		dbg.setColor(Color.green);
+		dbg.fillRect(275, 250, 50, 25);
 
-		if ((direction2 % 2) == 0) {
-			blaHeadX -= 3; // Speed
-		} else {
-			blaHeadX += 3;
-		}
+		dbg.setColor(Color.yellow); // Goal Block
+		dbg.fillRect(Block, 385, 15, 15);
 
-		if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
-			direction2++;
-		}
+		dbg.setColor(Color.blue); // Blue Monster
+		dbg.fillOval(bluHeadX, bluHeadY, 30, 30);
+		dbg.setColor(Color.white);
+		dbg.drawRect(bluHeadX, bluHeadY, 30, 30);
 
-		if ((direction3 % 2) == 0) {
-			oraHeadX -= 2.5; // Speed
-		} else {
-			oraHeadX += 2.5;
-		}
+		dbg.setColor(Color.magenta); // Magenta Monster
+		dbg.fillRect(magHeadX, magHeadY, 40, 20);
+		dbg.setColor(Color.white);
+		dbg.drawRect(magHeadX, magHeadY, 40, 20);
 
-		if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
-			direction3++;
-		}
+		dbg.setColor(Color.black); // Black Monster
+		dbg.fillRect(blaHeadX, blaHeadY, 30, 30);
+		dbg.setColor(Color.white);
+		dbg.drawRect(blaHeadX, blaHeadY, 30, 30);
+
+		dbg.setColor(Color.orange); // Orange Monster
+		dbg.fillOval(oraHeadX, oraHeadY, 30, 45);
+		dbg.setColor(Color.white);
+		dbg.drawOval(oraHeadX, oraHeadY, 30, 45);
+
+		dbg.setColor(Color.black); // BitMan - all the points are implemented in
+		// the top method.
+		dbg.drawOval(headX, headY, 10, 10);
+		dbg.drawLine(bodyStartX, bodyStartY, bodyEndX, bodyEndY);
+		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
+		dbg.drawLine(bodyEndX, bodyEndY, leftLegEndX, leftLegEndY);
+		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
 	}
 
 	public void lost() {
 
 		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
-				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE); // Message
-																			// displayed
-																			// when
-																			// player
-																			// dies
+				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE);
+
+		// Reset Possibly Stuck Keys
+		leftKeyPressed = false;
+		jumpKeyPressed = false;
+		rightKeyPressed = false;
 
 		// Reset Score and Lives
 		score = 0;
@@ -477,6 +504,10 @@ public class MainThread implements Runnable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+
+			if (e.getKeyCode() == KeyEvent.VK_Q) {
+				lost();
+			}
 
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
 				jumpKeyPressed = true;
