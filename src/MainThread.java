@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-public class main2 extends JFrame implements Runnable {
+public class MainThread extends JFrame implements Runnable {
 	/**
 	 * 
 	 */
@@ -38,7 +38,7 @@ public class main2 extends JFrame implements Runnable {
 	public boolean running;
 	public Thread animator;
 
-	public main2() {
+	public MainThread() {
 
 		super("TEST");
 		c = getContentPane();
