@@ -29,38 +29,35 @@ import javax.swing.JOptionPane;
  */
 
 public class MainThread implements Runnable {
-	/*
-	 * Here is where I implemented all of the integers and variables which I use
-	 * in the rest of the program.
-	 */
-
+	
 	// Graphics
 	public Graphics dbg;
-	protected int bluHeadX = 225, bluHeadY = 369;
-	protected int magHeadX = 285, magHeadY = 479;
-	protected int blaHeadX = 70, blaHeadY = 369;
-	protected int oraHeadX = 520, oraHeadY = 354;
-	protected int headX = 292, headY = 215;
-	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
+	protected int bluHeadX = 225, bluHeadY = 369; // Coordinates for blue monster.
+	protected int magHeadX = 285, magHeadY = 479; // Coordinates for magenta monster.
+	protected int blaHeadX = 70, blaHeadY = 369;  // Coordinates for black monster.
+	protected int oraHeadX = 520, oraHeadY = 354; // Coordinates for orange monster.
+	protected int headX = 292, headY = 215; // Coordinates for BitMan's head.
+	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297, // Coordinates for BitMan's body.
 		      bodyEndY = 240;
-	protected int armStartX = 292, armStartY = 234, armEndX = 302,
+	protected int armStartX = 292, armStartY = 234, armEndX = 302, // Coordinates for BitMan's arms.
 		      armEndY = 234;
-	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
+	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304, // Coordinates for bitMan's legs.
 		      leftLegEndY = 249;
-	protected int Block = 500;
+	protected int block = 500; 
 
 	// Controls
-	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
-	protected float velocityX = 5, velocityY = 5, gravity = 0.5f;
-	protected int counter;
-	protected int direction;
+	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling; // Booleans to keep track of keys 
+									            // pressed.
+	protected float velocityX = 5, velocityY = 5, gravity = 0.5f; // Velocity of BitMan and magnitude of gravity.
+	protected int counter; // Counter variable for length of time BitMan can jump.
+	protected int direction;  // Integers to keep track of Bitman's direction.
 	protected int direction1;
 	protected int direction2;
 	protected int direction3;
 
 	// Screen
 	protected static JFrame frame = new JFrame();
-	protected Image dbImage = null;
+	protected Image dbImage = null; // Double-Buffer Image.
 	protected int dbHeight = 600, dbWidth = 600;
 	protected int score, life = 3;
 	protected Container container;
@@ -222,7 +219,7 @@ public class MainThread implements Runnable {
 						}
 					}
 
-					if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+					if (((armStartX <= (block + 15)) && (armEndX >= block))) {
 						if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
 							score++;
 
@@ -230,7 +227,7 @@ public class MainThread implements Runnable {
 							if (randNum < 110) {
 								randNum = 110;
 							}
-							Block = randNum;
+							block = randNum;
 						}
 					}
 				} catch (InterruptedException e) {
@@ -405,7 +402,7 @@ public class MainThread implements Runnable {
 		dbg.fillRect(275, 250, 50, 25);
 
 		dbg.setColor(Color.yellow); // Goal Block
-		dbg.fillRect(Block, 385, 15, 15);
+		dbg.fillRect(block, 385, 15, 15);
 
 		dbg.setColor(Color.blue); // Blue Monster
 		dbg.fillOval(bluHeadX, bluHeadY, 30, 30);
