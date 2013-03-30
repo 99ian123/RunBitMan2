@@ -16,8 +16,8 @@ import javax.swing.JOptionPane;
 /**
  * Programme to <b>INSERT PURPOSE HERE</b>.
  * 
- * @author 99ian123
- * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs.
+ * @author 99ian123 - Designer, Wrote most code.
+ * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs, organized code.
  * @since 29 March 2013
  */
 
