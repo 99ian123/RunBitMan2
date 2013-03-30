@@ -32,9 +32,9 @@ import javax.swing.JOptionPane;
 
 public class MainThread implements Runnable {
 	/*
-	Here is where I implemented all of the integers and variables which I use
-	in the rest of the program.
-	*/
+	 * Here is where I implemented all of the integers and variables which I use
+	 * in the rest of the program.
+	 */
 
 	// Graphics
 	public Graphics dbg;
@@ -70,12 +70,20 @@ public class MainThread implements Runnable {
 	public boolean running;
 	public Thread animator;
 
-	public MainThread() { // The Basic GUI Method. aka Sreen Size, Visiblilty, Layout, etc.
+	public MainThread() { // Constructor
 
 		frame.setTitle("RunBitMan 2");
 		container = frame.getContentPane();
 		container.setLayout(new FlowLayout());
-		startGame();
+
+		Runnable startGame = new Runnable() {
+			@Override
+			public void run() {
+				startGame();
+			}
+		};
+		startGame.run();
+
 		KeyHandler handler = new KeyHandler();
 		frame.addKeyListener(handler);
 		frame.setSize(600, 600);
@@ -124,7 +132,8 @@ public class MainThread implements Runnable {
 			}
 		}
 		// Graphics Method. Where all of the character/platforms are drawn.
-		// It's a bit confusing - some of the points are defined in the method above where I
+		// It's a bit confusing - some of the points are defined in the method
+		// above where I
 		// implemented everything.
 
 		dbg = dbImage.getGraphics();
@@ -170,7 +179,8 @@ public class MainThread implements Runnable {
 		dbg.setColor(Color.white);
 		dbg.drawOval(oraHeadX, oraHeadY, 30, 45);
 
-		dbg.setColor(Color.black); // BitMan - all the points are implemented in the top method.
+		dbg.setColor(Color.black); // BitMan - all the points are implemented in
+									// the top method.
 		dbg.drawOval(headX, headY, 10, 10);
 		dbg.drawLine(bodyStartX, bodyStartY, bodyEndX, bodyEndY);
 		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
@@ -269,16 +279,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						JOptionPane.showMessageDialog(null,
-								"You Lose!\nYour high score was: " + score
-										+ " points", "Lost",
-								JOptionPane.WARNING_MESSAGE); // Message
-																// displayed
-																// when player
-																// dies
-						score = 0;
-						life = 3; // how many lives player starts with
-
+						lost();
 					}
 				}
 			}
@@ -403,13 +404,19 @@ public class MainThread implements Runnable {
 	}
 
 	public void lost() {
-		try {
-			Thread.sleep(1500); // Time Before Respawn
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
-		// Set Positions for Things?
+		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
+				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE); // Message
+																			// displayed
+																			// when
+																			// player
+																			// dies
+
+		// Reset Score and Lives
+		score = 0;
+		life = 3;
+
+		// Set Positions for Things
 		headX = 292;
 		headY = 215;
 		bodyStartX = 297;
@@ -443,7 +450,13 @@ public class MainThread implements Runnable {
 
 	public static void main(String[] args) {
 		// Construct Frame
-		new MainThread();
+		Runnable construct = new Runnable() {
+			@Override
+			public void run() {
+				new MainThread();
+			}
+		};
+		construct.run();
 
 		// Add Window Listener
 		frame.addWindowListener(new WindowAdapter() {
