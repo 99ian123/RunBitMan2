@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
  * 
  * @author 99ian123 - Designer, Wrote most code.
  * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs, organized code.
+ * @author kullalok - Consulting
  * @since 29 March 2013
  */
 
