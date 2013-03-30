@@ -24,9 +24,7 @@ import javax.swing.JOptionPane;
 /*
  * TODO Prevent going off the side of the screen!
  * 
- * TODO Add a background or something (it makes it look better)
- * 
- * TODO Split into more than one class for maintenance purposes.
+ * TODO Fix platform issue.
  */
 
 public class MainThread implements Runnable {
