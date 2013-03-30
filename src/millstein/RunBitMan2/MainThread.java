@@ -100,6 +100,9 @@ public class MainThread implements Runnable {
 
 	// Opens Screen
 	@Override
+	/**
+	 * Thread which calls the rendering, then the painting. It sets the frame rate, and the game opening systems.
+	 */
 	public void run() {
 		running = true;
 
@@ -120,30 +123,39 @@ public class MainThread implements Runnable {
 		}
 
 		// While Loop to Repaint the Screen
-		while (running) {
-			gameRenderObjects();
-			gameRenderMovement();
-			gameRenderMobs();
-			paintScreen();
+		Runnable graphicsThread = new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					gameRenderObjects();
+					gameRenderMovement();
+					gameRenderMobs();
+					gameRenderHitbox(200);
+					paintScreen();
 
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-		}
+		};
+		graphicsThread.run();
+
 	}
 
-	public void gameRenderMobs() {
+	/**
+	 * Thread and data to render the hit boxes of all the mobs and of the player
+	 * character.
+	 * 
+	 * @param pauseTime
+	 *            - amount of time the thread will pause for the
+	 */
+	public void gameRenderHitbox(final long pauseTime) {
 		Runnable MobThread = new Runnable() {
 			@Override
 			public void run() {
-
-				long pauseTime = 500;
-				/*
-				 * if (difficulty == NORMAL) { pauseTime = 400; } if (difficulty
-				 * == HARD) { pauseTime = 150; }
-				 */
 				try {
 					if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
 						if ((rightLegEndY >= bluHeadY)
@@ -222,56 +234,61 @@ public class MainThread implements Runnable {
 							Block = randNum;
 						}
 					}
-
-					dbg.setColor(Color.black);
-					dbg.drawString("Score: " + score, 25, 100);
-					dbg.drawString("Lives remaining: " + life, 25, 120);
-
-					// Mob Movement
-					if ((direction % 2) == 0) {
-						bluHeadX -= 4; // Speed
-					} else {
-						bluHeadX += 4;
-					}
-
-					if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
-						direction++;
-					}
-
-					if ((direction1 % 2) == 0) {
-						magHeadX -= 13; // Speed
-					} else {
-						magHeadX += 13;
-					}
-
-					if ((magHeadX <= 5) || (magHeadX >= 555)) {
-						direction1++;
-					}
-
-					if ((direction2 % 2) == 0) {
-						blaHeadX -= 3; // Speed
-					} else {
-						blaHeadX += 3;
-					}
-
-					if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
-						direction2++;
-					}
-
-					if ((direction3 % 2) == 0) {
-						oraHeadX -= 2.5; // Speed
-					} else {
-						oraHeadX += 2.5;
-					}
-
-					if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
-						direction3++;
-					}
 				} catch (InterruptedException e) {
 				}
 			}
 		};
 		MobThread.run();
+	}
+
+	/**
+	 * Method renders all the Mobs in the Game.
+	 */
+	public void gameRenderMobs() {
+		dbg.setColor(Color.black);
+		dbg.drawString("Score: " + score, 25, 100);
+		dbg.drawString("Lives remaining: " + life, 25, 120);
+
+		// Mob Movement
+		if ((direction % 2) == 0) {
+			bluHeadX -= 4; // Speed
+		} else {
+			bluHeadX += 4;
+		}
+
+		if ((bluHeadX <= 220) || (bluHeadX >= 355)) {
+			direction++;
+		}
+
+		if ((direction1 % 2) == 0) {
+			magHeadX -= 13; // Speed
+		} else {
+			magHeadX += 13;
+		}
+
+		if ((magHeadX <= 5) || (magHeadX >= 555)) {
+			direction1++;
+		}
+
+		if ((direction2 % 2) == 0) {
+			blaHeadX -= 3; // Speed
+		} else {
+			blaHeadX += 3;
+		}
+
+		if ((blaHeadX <= 5) || (blaHeadX >= 130)) {
+			direction2++;
+		}
+
+		if ((direction3 % 2) == 0) {
+			oraHeadX -= 2.5; // Speed
+		} else {
+			oraHeadX += 2.5;
+		}
+
+		if ((oraHeadX <= 445) || (oraHeadX >= 570)) {
+			direction3++;
+		}
 	}
 
 	/**
@@ -362,7 +379,7 @@ public class MainThread implements Runnable {
 	}
 
 	/**
-	 * Renders the Objects. Should only be called once or twice.
+	 * Renders the Objects.
 	 */
 	public void gameRenderObjects() {
 
@@ -429,6 +446,9 @@ public class MainThread implements Runnable {
 		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
 	}
 
+	/**
+	 * Resets the variables which are required when you lose.
+	 */
 	public void lost() {
 
 		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
@@ -461,8 +481,11 @@ public class MainThread implements Runnable {
 		direction = 0;
 	}
 
+	/**
+	 * Updates the screen with the new data provided by the many gameRender
+	 * methods.
+	 */
 	public void paintScreen() {
-
 		Graphics g;
 		try {
 			g = frame.getGraphics();
@@ -475,6 +498,12 @@ public class MainThread implements Runnable {
 		}
 	}
 
+	/**
+	 * Main.
+	 * 
+	 * @param args
+	 *            - No arguments are taken from the Main.
+	 */
 	public static void main(String[] args) {
 		// Construct Frame
 		Runnable construct = new Runnable() {
