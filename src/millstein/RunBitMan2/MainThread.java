@@ -333,12 +333,6 @@ public class MainThread implements Runnable {
 			leftLegEndX -= velocityX;
 		}
 
-		if (headY >= 360) {
-			headY = 360;
-			falling = false;
-			counter = 0;
-		}
-
 		 if( leftLegEndY >= 394 && leftLegEndY <= 410 && ( leftLegEndX <= 169 || rightLegEndX >= 210 )) {
                         
                     headY = 359;
