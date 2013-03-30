@@ -43,11 +43,11 @@ public class MainThread implements Runnable {
 	protected int oraHeadX = 520, oraHeadY = 354;
 	protected int headX = 292, headY = 215;
 	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
-			bodyEndY = 240;
+		      bodyEndY = 240;
 	protected int armStartX = 292, armStartY = 234, armEndX = 302,
-			armEndY = 234;
+		      armEndY = 234;
 	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
-			leftLegEndY = 249;
+		      leftLegEndY = 249;
 	protected int Block = 500;
 
 	// Controls
