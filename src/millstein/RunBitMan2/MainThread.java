@@ -176,8 +176,10 @@ public class MainThread implements Runnable {
 		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, leftLegEndX, leftLegEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
+		
+		// In the following, I implemented movement.
 
-		if (jumpKeyPressed && (counter <= 20)) {
+		if (jumpKeyPressed && (counter <= 20)) { // Jumping
 			headY -= velocityY;
 			bodyStartY -= velocityY;
 			bodyEndY -= velocityY;
@@ -188,7 +190,7 @@ public class MainThread implements Runnable {
 			counter++;
 		}
 
-		else if (jumpKeyPressed && (counter > 20)) {
+		else if (jumpKeyPressed && (counter > 20)) { 
 			jumpKeyPressed = false;
 		}
 
@@ -198,7 +200,7 @@ public class MainThread implements Runnable {
 			falling = false;
 		}
 
-		if (rightKeyPressed) {
+		if (rightKeyPressed) { // Moving Right
 			headX += velocityX;
 			bodyStartX += velocityX;
 			bodyEndX += velocityX;
@@ -209,7 +211,7 @@ public class MainThread implements Runnable {
 
 		}
 
-		if (leftKeyPressed) {
+		if (leftKeyPressed) { // Moving Left
 			headX -= velocityX;
 			bodyStartX -= velocityX;
 			bodyEndX -= velocityX;
@@ -218,6 +220,8 @@ public class MainThread implements Runnable {
 			rightLegEndX -= velocityX;
 			leftLegEndX -= velocityX;
 		}
+		
+		// Player bounderies ( aka. where the different body parts can/can't go ).
 
 		if (headY >= 360) {
 			headY = 360;
@@ -260,6 +264,8 @@ public class MainThread implements Runnable {
 		}
 
 		// HitBox Logic
+		// What happens if character touches monters/goal block.
+		
 		for (int i = 0; i <= 900; i++) {
 			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
 				if ((rightLegEndY >= bluHeadY)
@@ -357,11 +363,16 @@ public class MainThread implements Runnable {
 				}
 			}
 		}
+		
+		// The score and lives screen.
+		
 		dbg.setColor(Color.black);
 		dbg.drawString("Score: " + score, 25, 100);
 		dbg.drawString("Lives remaining: " + life, 25, 120);
-
-		if ((direction % 2) == 0) {
+		
+		// The Speed of the various monsters, and where they can/can't go.
+		
+		if ((direction % 2) == 0) { // Blue Monster
 			bluHeadX -= 4; // Speed
 		} else {
 			bluHeadX += 4;
@@ -371,7 +382,7 @@ public class MainThread implements Runnable {
 			direction++;
 		}
 
-		if ((direction1 % 2) == 0) {
+		if ((direction1 % 2) == 0) { // Magenta Monster
 			magHeadX -= 13; // Speed
 		} else {
 			magHeadX += 13;
@@ -381,7 +392,7 @@ public class MainThread implements Runnable {
 			direction1++;
 		}
 
-		if ((direction2 % 2) == 0) {
+		if ((direction2 % 2) == 0) { // Black Monster
 			blaHeadX -= 3; // Speed
 		} else {
 			blaHeadX += 3;
@@ -391,7 +402,7 @@ public class MainThread implements Runnable {
 			direction2++;
 		}
 
-		if ((direction3 % 2) == 0) {
+		if ((direction3 % 2) == 0) { // Oranger Monster
 			oraHeadX -= 2.5; // Speed
 		} else {
 			oraHeadX += 2.5;
@@ -402,14 +413,14 @@ public class MainThread implements Runnable {
 		}
 	}
 
-	public void lost() {
+	public void lost() { // Lost Method
 		try {
 			Thread.sleep(1500); // Time Before Respawn
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		// Set Positions for Things?
+		// Respawn Position for BitMan
 		headX = 292;
 		headY = 215;
 		bodyStartX = 297;
