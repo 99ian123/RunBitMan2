@@ -48,7 +48,12 @@ public class MainThread implements Runnable {
 			}
 			if (key == KeyEvent.VK_H) {
 				String helpString = "Standard Controls are WASD."
-						+ "\nPress Q to Quit, and H to show this.";
+						+ "\nPress Q to Quit, I for information, and H to show this.";
+				JOptionPane.showMessageDialog(null, helpString);
+			}
+			if (key == KeyEvent.VK_I) {
+				String helpString = "Authors:"
+						+ "\n99ian123 - Designer \nifly6 - Editor \nkullalok - Consulting";
 				JOptionPane.showMessageDialog(null, helpString);
 			}
 
@@ -571,29 +576,29 @@ public class MainThread implements Runnable {
 	/**
 	 * Thread which calls the rendering, then the painting. It sets the frame
 	 * rate, and the game opening systems. It is the main graphics THREAD. The
-	 * others haven't been localised into their respective threads yet.
+	 * others haven't been localized into their respective threads yet.
 	 */
 	@Override
 	public void run() {
 		running = true;
 
 		// Choices
-		String[] possibilities = { "easy", "normal", "hard" };
+		String[] possibilities = { "Easy", "Normal", "Hard" };
 
 		// Input System
 		difficulty = (String) JOptionPane.showInputDialog(frame,
 				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
-				null, possibilities, "easy");
+				null, possibilities, "Easy");
 
 		long speedDeclare = 45;
-		if (difficulty.equals("easy")) {
+		if (difficulty.equals("Easy")) {
 			speedDeclare = 45;
 		}
-		if (difficulty.equals("normal")) {
+		if (difficulty.equals("Normal")) {
 			speedDeclare = 30;
 		}
-		if (difficulty.equals("hard")) {
-			speedDeclare = 10;
+		if (difficulty.equals("Hard")) {
+			speedDeclare = 15;
 		}
 		final long speed = speedDeclare;
 
