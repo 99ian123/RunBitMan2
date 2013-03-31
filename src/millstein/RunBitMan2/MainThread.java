@@ -16,8 +16,8 @@ import javax.swing.JOptionPane;
 /**
  * Programme to be a rudimentary game.
  * 
- * @author 99ian123
- * @author ifly6 - Fixing a VERY LARGE NUMBER of bugs.
+ * @author 99ian123 - Designer
+ * @author ifly6 - Editor
  * @author kullalok - Consultant
  * 
  * @since 29 March 2013
