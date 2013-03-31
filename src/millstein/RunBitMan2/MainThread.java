@@ -100,18 +100,27 @@ public class MainThread implements Runnable {
 	protected int directionBlu;
 	protected int directionMag;
 	protected int directionBla;
+	protected static String difficulty;
 
 	protected int diredctionOra;
 	// Screen
 	protected static JFrame frame = new JFrame();
 
 	/**
-	 * Main.
+	 * Main. Sets difficulty, then constructs the other things. Calls the
+	 * constructor.
 	 * 
 	 * @param args
 	 *            - No arguments are taken from the Main.
 	 */
 	public static void main(String[] args) {
+
+		// Difficulty Declaration. This should be put into a JDialog some time
+		// later.
+		difficulty = "easy";
+		// difficulty = "normal";
+		// difficulty = "hard";
+
 		// Construct Frame
 		Runnable construct = new Runnable() {
 			@Override
@@ -141,6 +150,11 @@ public class MainThread implements Runnable {
 
 	protected Thread animator;
 
+	/**
+	 * Constructor. It sets the frame, then creates a runnable for starting the
+	 * game - and calls startGame(). It then adds the handler for the keys and
+	 * sets the frame to visible.
+	 */
 	MainThread() { // Constructor
 
 		frame.setTitle("RunBitMan 2");
@@ -166,7 +180,7 @@ public class MainThread implements Runnable {
 	 * character.
 	 * 
 	 * @param pauseTime
-	 *            - amount of time the thread will pause for the
+	 *            - amount of time the thread will slow the frame-rate when hit.
 	 */
 	public void gameRenderHitbox(final long pauseTime) {
 		Runnable MobThread = new Runnable() {
@@ -559,17 +573,30 @@ public class MainThread implements Runnable {
 	}
 
 	// Opens Screen
-	@Override
 	/**
-	 * Thread which calls the rendering, then the painting. It sets the frame rate, and the game opening systems.
+	 * Thread which calls the rendering, then the painting. It sets the frame
+	 * rate, and the game opening systems. It is the main graphics THREAD. The
+	 * others haven't been localised into their respective threads yet.
 	 */
+	@Override
 	public void run() {
 		running = true;
 
-		JOptionPane.showMessageDialog(null, "RunBitMan 2",
-				"This is a testing programme."
-						+ "\nIt makes no claims to working perfectly.",
+		JOptionPane.showMessageDialog(null, "This is a testing programme."
+				+ "\nIt makes no claims to working perfectly.", "RunBitMan 2",
 				JOptionPane.WARNING_MESSAGE);
+
+		long speedDeclare = 45;
+		if (difficulty.equals("easy")) {
+			speedDeclare = 45;
+		}
+		if (difficulty.equals("normal")) {
+			speedDeclare = 30;
+		}
+		if (difficulty.equals("hard")) {
+			speedDeclare = 10;
+		}
+		final long speed = speedDeclare;
 
 		gameRenderObjects();
 		gameRenderMovement();
@@ -595,7 +622,7 @@ public class MainThread implements Runnable {
 					paintScreen();
 
 					try {
-						Thread.sleep(45);
+						Thread.sleep(speed);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -606,7 +633,9 @@ public class MainThread implements Runnable {
 
 	}
 
-	// Invoke Running
+	/**
+	 * Starts the game, creating the animation system - with the thread, Run.
+	 */
 	void startGame() {
 		if ((animator == null) || !running) {
 			animator = new Thread(this);
