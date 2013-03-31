@@ -23,9 +23,7 @@ import javax.swing.JOptionPane;
  * @since 29 March 2013
  */
 
-/*
- * TODO Prevent going off the side of the screen!
- * 
+/* 
  * TODO Add a background or something (it makes it look better)
  * 
  * TODO Split into more than one class for maintenance purposes.
