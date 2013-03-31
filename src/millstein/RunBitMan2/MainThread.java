@@ -36,43 +36,46 @@ public class MainThread implements Runnable {
 	/**
 	 * Handles the Key pressing. Then sets system-wide data with stimuli, which
 	 * is read by while loop.
-	 * 
-	 * @author 99ian123
 	 */
 	private class KeyHandler extends KeyAdapter {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+			int key = e.getKeyCode();
 
-			if (e.getKeyCode() == KeyEvent.VK_Q) {
-				lost();
+			if (key == KeyEvent.VK_Q) {
+				System.exit(0);
+			}
+			if (key == KeyEvent.VK_H) {
+				String helpString = "Standard Controls are WASD."
+						+ "\nPress Q to Quit, and H to show this.";
+				JOptionPane.showMessageDialog(null, helpString);
 			}
 
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
+			// Movement
+			if (e.getKeyCode() == KeyEvent.VK_W) {
 				jumpKeyPressed = true;
 			}
 
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if (e.getKeyCode() == KeyEvent.VK_D) {
 				rightKeyPressed = true;
 			}
 
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if (e.getKeyCode() == KeyEvent.VK_A) {
 				leftKeyPressed = true;
 			}
+
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
+			if (e.getKeyCode() == KeyEvent.VK_W) {
 				jumpKeyPressed = false;
 			}
-
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if (e.getKeyCode() == KeyEvent.VK_D) {
 				rightKeyPressed = false;
 			}
-
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if (e.getKeyCode() == KeyEvent.VK_A) {
 				leftKeyPressed = false;
 			}
 		}
@@ -100,9 +103,9 @@ public class MainThread implements Runnable {
 	protected int directionBlu;
 	protected int directionMag;
 	protected int directionBla;
+	protected int diredctionOra;
 	protected static String difficulty;
 
-	protected int diredctionOra;
 	// Screen
 	protected static JFrame frame = new JFrame();
 
@@ -114,12 +117,6 @@ public class MainThread implements Runnable {
 	 *            - No arguments are taken from the Main.
 	 */
 	public static void main(String[] args) {
-
-		// Difficulty Declaration. This should be put into a JDialog some time
-		// later.
-		difficulty = "easy";
-		// difficulty = "normal";
-		// difficulty = "hard";
 
 		// Construct Frame
 		Runnable construct = new Runnable() {
@@ -275,9 +272,6 @@ public class MainThread implements Runnable {
 	 * Method renders all the Mobs in the Game.
 	 */
 	public void gameRenderMobs() {
-		dbg.setColor(Color.black);
-		dbg.drawString("Score: " + score, 25, 100);
-		dbg.drawString("Lives remaining: " + life, 25, 120);
 
 		// Mob Movement
 		if ((directionBlu % 2) == 0) {
@@ -463,10 +457,6 @@ public class MainThread implements Runnable {
 				return;
 			}
 		}
-		// Graphics Method. Where all of the character/platforms are drawn.
-		// It's a bit confusing - some of the points are defined in the method
-		// above where I
-		// implemented everything.
 
 		dbg = dbImage.getGraphics();
 
@@ -518,6 +508,11 @@ public class MainThread implements Runnable {
 		dbg.drawLine(armStartX, armStartY, armEndX, armEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, leftLegEndX, leftLegEndY);
 		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
+
+		dbg.setColor(Color.black);
+		dbg.drawString("Press H for Help.", 25, 80);
+		dbg.drawString("Score: " + score, 25, 100);
+		dbg.drawString("Lives remaining: " + life, 25, 120);
 	}
 
 	/**
@@ -582,9 +577,13 @@ public class MainThread implements Runnable {
 	public void run() {
 		running = true;
 
-		JOptionPane.showMessageDialog(null, "This is a testing programme."
-				+ "\nIt makes no claims to working perfectly.", "RunBitMan 2",
-				JOptionPane.WARNING_MESSAGE);
+		// Choices
+		String[] possibilities = { "easy", "normal", "hard" };
+
+		// Input System
+		difficulty = (String) JOptionPane.showInputDialog(frame,
+				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
+				null, possibilities, "easy");
 
 		long speedDeclare = 45;
 		if (difficulty.equals("easy")) {
@@ -602,8 +601,8 @@ public class MainThread implements Runnable {
 		gameRenderMovement();
 		gameRenderMobs();
 		paintScreen();
-		// Give some time to prepare.
 
+		// Give some time to prepare.
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
