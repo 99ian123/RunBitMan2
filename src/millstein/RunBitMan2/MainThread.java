@@ -515,7 +515,7 @@ public class MainThread implements Runnable {
 		dbg.drawLine(bodyEndX, bodyEndY, rightLegEndX, rightLegEndY);
 
 		dbg.setColor(Color.black);
-		dbg.drawString("Press H for Help.", 25, 80);
+		dbg.drawString("Press H for Help", 25, 80);
 		dbg.drawString("Score: " + score, 25, 100);
 		dbg.drawString("Lives remaining: " + life, 25, 120);
 	}
