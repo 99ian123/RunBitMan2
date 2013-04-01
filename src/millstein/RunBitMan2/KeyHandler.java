@@ -4,13 +4,22 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
+/*
+*Handles the Key presing. Then sets system-wide data with stimuli, which is read by game loop.
+*
+*@author erm, who made this exactly? I just copy/pasted what was there.
+*@since 2013, April 1st
+*/
 public class KeyHandler extends KeyAdapter {
 
-  private boolean jumpKeyPressed, leftKeyPressed, rightKeyPressed;
-
-  @Override
+	private boolean jumpKeyPressed, leftKeyPressed, rightKeyPressed;
+	
+	/*
+	* Updates data when a key is pressed.
+	*/
+  	@Override
   	public void keyPressed(KeyEvent e) {
-			int key = e.getKeyCode();
+  		int key = e.getKeyCode();
 
 			if ((key == KeyEvent.VK_Q) || (key == KeyEvent.VK_ESCAPE)) {
 				System.exit(0);
@@ -42,33 +51,51 @@ public class KeyHandler extends KeyAdapter {
 				leftKeyPressed = true;
 			}
 
+	}
+	
+	/*
+	* Updates data when a key is released.
+	*/
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if ((e.getKeyCode() == KeyEvent.VK_W) || (e.getKeyCode() == KeyEvent.VK_UP)) {
+			jumpKeyPressed = false;
 		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			if ((e.getKeyCode() == KeyEvent.VK_W)
-					|| (e.getKeyCode() == KeyEvent.VK_UP)) {
-				jumpKeyPressed = false;
-			}
-			if ((e.getKeyCode() == KeyEvent.VK_D)
-					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
-				rightKeyPressed = false;
-			}
-			if ((e.getKeyCode() == KeyEvent.VK_A)
-					|| (e.getKeyCode() == KeyEvent.VK_LEFT)) {
-				leftKeyPressed = false;
-			}
+		if ((e.getKeyCode() == KeyEvent.VK_D) || (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
+			rightKeyPressed = false;
 		}
+		if ((e.getKeyCode() == KeyEvent.VK_A) || (e.getKeyCode() == KeyEvent.VK_LEFT)) {
+			leftKeyPressed = false;
+		}
+	}
                 
-    public boolean getJumpKeyPressed() {
-      return jumpKeyPressed;
-    }
+        /*
+        * Get method for jumpKeyPressed.
+        *
+        * @return
+        *		-boolean that holds whether or not BitMan should be jumping.
+        */     
+	public boolean getJumpKeyPressed() {
+      		return jumpKeyPressed;
+    	}
+        
+        /*
+        * Get method for leftKeyPressed
+        *
+        * @return
+        * 		-boolean that holds whether or not BitMan should be moving to the left.
+        */
+    	public boolean getLeftKeyPressed() {
+      		return leftKeyPressed;
+    	}
                 
-    public boolean getLeftKeyPressed() {
-      return leftKeyPressed;
-    }
-                
-    public boolean getRightKeyPressed() {
-      return rightKeyPressed;
-    }
+        /*
+        * Get method for rightKeyPressed
+        *
+        * @return
+        *		-boolean that holds whether or not BitMan should be moving right.
+        */
+    	public boolean getRightKeyPressed() {
+      		return rightKeyPressed;
+    	}
 }
