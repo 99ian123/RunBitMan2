@@ -9,9 +9,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -194,92 +191,86 @@ public class MainThread implements Runnable {
 	 *            - amount of time the thread will slow the frame-rate when hit.
 	 */
 	public void gameRenderHitbox(final long pauseTime) {
-		Runnable MobThread = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
-						if ((rightLegEndY >= bluHeadY)
-								&& (rightLegEndY <= (bluHeadY + 30))) {
-							Thread.sleep(pauseTime);
-							life--;
+		try {
+			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
+				if ((rightLegEndY >= bluHeadY)
+						&& (rightLegEndY <= (bluHeadY + 30))) {
+					Thread.sleep(pauseTime);
+					life--;
 
-							if (life == 0) {
-								lost();
-							}
-						}
+					if (life == 0) {
+						lost();
 					}
-
-					if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
-						if ((rightLegEndY >= blaHeadY)
-								&& (rightLegEndY <= (blaHeadY + 30))) {
-							Thread.sleep(pauseTime);
-							life--;
-
-							if (life == 0) {
-								lost();
-							}
-
-						}
-
-					}
-
-					if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
-						if ((rightLegEndY >= oraHeadY)
-								&& (rightLegEndY <= (oraHeadY + 30))) {
-							Thread.sleep(pauseTime);
-							life--;
-
-							if (life == 0) {
-								lost();
-							}
-
-						}
-
-					}
-
-					if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
-						if ((rightLegEndY >= magHeadY)
-								&& (rightLegEndY <= (magHeadY + 30))) {
-							Thread.sleep(pauseTime);
-							life--;
-
-							if (life == 0) {
-								lost();
-							}
-
-						}
-
-					}
-
-					if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
-						if ((rightLegEndY >= magHeadY)
-								&& (rightLegEndY <= (magHeadY + 30))) {
-							Thread.sleep(pauseTime);
-							life--;
-
-							if (life == 0) {
-								lost();
-							}
-						}
-					}
-
-					if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
-						if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
-							score++;
-
-							int randNum = (int) (Math.random() * 500);
-							if (randNum < 110) {
-								randNum = 110;
-							}
-							Block = randNum;
-						}
-					}
-				} catch (InterruptedException e) {
 				}
 			}
-		};
-		MobThread.run();
+
+			if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
+				if ((rightLegEndY >= blaHeadY)
+						&& (rightLegEndY <= (blaHeadY + 30))) {
+					Thread.sleep(pauseTime);
+					life--;
+
+					if (life == 0) {
+						lost();
+					}
+
+				}
+
+			}
+
+			if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
+				if ((rightLegEndY >= oraHeadY)
+						&& (rightLegEndY <= (oraHeadY + 30))) {
+					Thread.sleep(pauseTime);
+					life--;
+
+					if (life == 0) {
+						lost();
+					}
+
+				}
+
+			}
+
+			if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
+				if ((rightLegEndY >= magHeadY)
+						&& (rightLegEndY <= (magHeadY + 30))) {
+					Thread.sleep(pauseTime);
+					life--;
+
+					if (life == 0) {
+						lost();
+					}
+
+				}
+
+			}
+
+			if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
+				if ((rightLegEndY >= magHeadY)
+						&& (rightLegEndY <= (magHeadY + 30))) {
+					Thread.sleep(pauseTime);
+					life--;
+
+					if (life == 0) {
+						lost();
+					}
+				}
+			}
+
+			if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+				if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
+					score++;
+
+					int randNum = (int) (Math.random() * 500);
+					if (randNum < 110) {
+						randNum = 110;
+					}
+					Block = randNum;
+				}
+			}
+		} catch (InterruptedException e) {
+		}
 	}
 
 	/**
@@ -645,41 +636,6 @@ public class MainThread implements Runnable {
 	}
 
 	/**
-	 * Resets the variables which are required when you lose.
-	 */
-	public void lost() {
-
-		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
-				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE);
-
-		// Reset Possibly Stuck Keys
-		leftKeyPressed = false;
-		jumpKeyPressed = false;
-		rightKeyPressed = false;
-
-		// Reset Score and Lives
-		score = 0;
-		life = 3;
-
-		// Set Positions for Player Character
-		headY = 211;
-		bodyStartY = 221;
-		bodyEndY = 236;
-		armStartY = 230;
-		armEndY = 230;
-		rightLegEndY = 245;
-		leftLegEndY = 245;
-
-		headX = 292;
-		bodyStartX = 297;
-		bodyEndX = 297;
-		armStartX = 292;
-		armEndX = 302;
-		rightLegEndX = 290;
-		leftLegEndX = 304;
-	}
-
-	/**
 	 * Updates the screen with the new data provided by the many gameRender
 	 * methods.
 	 */
@@ -748,10 +704,9 @@ public class MainThread implements Runnable {
 				while (running) {
 					gameRenderObjects();
 					gameRenderMovement();
-					gameRenderHitbox(500);
-
 					gameRenderMobs();
 					paintScreen();
+					gameRenderHitbox(500);
 
 					try {
 						Thread.sleep(speed);
@@ -761,8 +716,8 @@ public class MainThread implements Runnable {
 				}
 			}
 		};
-		graphicsThread.run();
 
+		graphicsThread.run();
 	}
 
 	/**
@@ -784,6 +739,7 @@ public class MainThread implements Runnable {
 	 * }
 	 */
 
+<<<<<<< HEAD
 	/**
 	 * Read configuration of the programme from file. This is currently not
 	 * used. The source is copied from iFlyCode/JavaPy's package involving.
@@ -825,4 +781,6 @@ public class MainThread implements Runnable {
 		} catch (FileNotFoundException e) {
 		}
 	}
+=======
+>>>>>>> moved out some methods to gamemode.java
 }
