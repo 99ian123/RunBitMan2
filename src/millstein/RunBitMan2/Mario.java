@@ -2,6 +2,7 @@ package millstein.RunBitMan2;
 
 import javax.swing.JOptionPane;
 
+
 public class Mario extends Game implements LevelPlugin {
 
 	@Override

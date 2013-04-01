@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+
 public class Kirby extends Game implements LevelPlugin {
 
 	/**
