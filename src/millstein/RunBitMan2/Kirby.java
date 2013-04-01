@@ -144,7 +144,6 @@ public class Kirby extends Game implements LevelPlugin {
 	 * @see iFlyCode/JavaPy
 	 * @see javapy.files.FileReading
 	 */
-	@Override
 	public void readConfig(String file) {
 		try {
 			FileReader configRead;
@@ -174,7 +173,6 @@ public class Kirby extends Game implements LevelPlugin {
 				leftLegEndX = scan.nextInt();
 				leftLegEndY = scan.nextInt();
 				Block = scan.nextInt();
-				difficulty = scan.nextLine();
 			}
 		} catch (FileNotFoundException e) {
 		}

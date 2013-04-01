@@ -6,37 +6,26 @@ public class Mario extends Game implements LevelPlugin {
 
 	@Override
 	public void gameRenderMobs() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void gameRenderMovement() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void gameRenderObjects() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void gameRenderHitbox(long pauseTime) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void readConfig(String file) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void lost() {
-		// TODO Auto-generated method stub
 
 	}
 
