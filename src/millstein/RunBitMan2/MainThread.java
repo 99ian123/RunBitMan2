@@ -9,6 +9,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,11 +26,11 @@ import javax.swing.JOptionPane;
  * @since 29 March 2013
  */
 
-/* 
+/*
  * TODO Add a background or something (it makes it look better)
  * 
  * TODO Split into more than one class for maintenance purposes.
- *
+ * 
  * TODO Fix reset after BitMan loses.
  */
 
@@ -43,7 +46,7 @@ public class MainThread implements Runnable {
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
 
-			if (key == KeyEvent.VK_Q || key == KeyEvent.VK_ESCAPE) {
+			if ((key == KeyEvent.VK_Q) || (key == KeyEvent.VK_ESCAPE)) {
 				System.exit(0);
 			}
 			if (key == KeyEvent.VK_H) {
@@ -58,15 +61,18 @@ public class MainThread implements Runnable {
 			}
 
 			// Movement
-			if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
+			if ((e.getKeyCode() == KeyEvent.VK_W)
+					|| (e.getKeyCode() == KeyEvent.VK_UP)) {
 				jumpKeyPressed = true;
 			}
 
-			if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if ((e.getKeyCode() == KeyEvent.VK_D)
+					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
 				rightKeyPressed = true;
 			}
 
-			if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if ((e.getKeyCode() == KeyEvent.VK_A)
+					|| (e.getKeyCode() == KeyEvent.VK_LEFT)) {
 				leftKeyPressed = true;
 			}
 
@@ -74,13 +80,16 @@ public class MainThread implements Runnable {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
+			if ((e.getKeyCode() == KeyEvent.VK_W)
+					|| (e.getKeyCode() == KeyEvent.VK_UP)) {
 				jumpKeyPressed = false;
 			}
-			if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if ((e.getKeyCode() == KeyEvent.VK_D)
+					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
 				rightKeyPressed = false;
 			}
-			if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if ((e.getKeyCode() == KeyEvent.VK_A)
+					|| (e.getKeyCode() == KeyEvent.VK_LEFT)) {
 				leftKeyPressed = false;
 			}
 		}
@@ -324,10 +333,13 @@ public class MainThread implements Runnable {
 	 * Renders movement of the player Character.
 	 */
 	public void gameRenderMovement() {
-            
-                boolean hitPlatformFall = false; // Boolean to hold whether or not BitMan is falling due to hitting a platform on the underside.
 
-		// Determines whether or not BitMan has landed on a platform and stops him from falling if so.
+		boolean hitPlatformFall = false; // Boolean to hold whether or not
+											// BitMan is falling due to hitting
+											// a platform on the underside.
+
+		// Determines whether or not BitMan has landed on a platform and stops
+		// him from falling if so.
 		if ((rightLegEndY >= 245) && (leftLegEndY <= 255)) {
 
 			if ((rightLegEndX >= 265) && (leftLegEndX <= 335)) {
@@ -338,17 +350,18 @@ public class MainThread implements Runnable {
 				armEndY = 230;
 				rightLegEndY = 245;
 				leftLegEndY = 245;
-                                
-                                hitPlatformFall = false;
+
+				hitPlatformFall = false;
 				falling = false;
 				counter = 0;
 			}
 		}
 
-		// Determines whether or not BitMan has landed on any one of the middle platforrms and stops him from falling if so.
+		// Determines whether or not BitMan has landed on any one of the middle
+		// platforms and stops him from falling if so.
 		if ((rightLegEndY >= 395) && (leftLegEndY <= 410)) {
-                        
-                        // Checks the middle-left platform.
+
+			// Checks the middle-left platform.
 			if ((rightLegEndX >= 5) && (leftLegEndX <= 165)) {
 				headY = 360;
 				bodyStartY = 370;
@@ -357,12 +370,12 @@ public class MainThread implements Runnable {
 				armEndY = 379;
 				rightLegEndY = 395;
 				leftLegEndY = 395;
-                                
-                                hitPlatformFall = false;
+
+				hitPlatformFall = false;
 				falling = false;
 				counter = 0;
 			}
-                        // Checks the middle-center platform.
+			// Checks the middle-center platform.
 			if ((rightLegEndX >= 215) && (leftLegEndX <= 385)) {
 				headY = 360;
 				bodyStartY = 370;
@@ -371,12 +384,12 @@ public class MainThread implements Runnable {
 				armEndY = 379;
 				rightLegEndY = 395;
 				leftLegEndY = 395;
-                                
-                                hitPlatformFall = false;
+
+				hitPlatformFall = false;
 				falling = false;
 				counter = 0;
 			}
-                        // Checks the middle-right platform.
+			// Checks the middle-right platform.
 			if ((rightLegEndX >= 435) && (leftLegEndX <= 595)) {
 				headY = 360;
 				bodyStartY = 370;
@@ -385,14 +398,15 @@ public class MainThread implements Runnable {
 				armEndY = 379;
 				rightLegEndY = 395;
 				leftLegEndY = 395;
-                                
-                                hitPlatformFall = false;
+
+				hitPlatformFall = false;
 				falling = false;
 				counter = 0;
 			}
 		}
-                
-                // Determines whether or not BitMan has landed on the lowest platform and stops him from falling if so.
+
+		// Determines whether or not BitMan has landed on the lowest platform
+		// and stops him from falling if so.
 		if (leftLegEndY >= 495) {
 			headY = 460;
 			bodyStartY = 470;
@@ -401,114 +415,91 @@ public class MainThread implements Runnable {
 			armEndY = 479;
 			rightLegEndY = 495;
 			leftLegEndY = 495;
-                        
-                        hitPlatformFall = false;
+
+			hitPlatformFall = false;
 			falling = false;
 			counter = 0;
 		}
-                // Ensures BitMan cannot jump through any of the platforms on the underside.
-                if( headY >= 415 && headY <= 425 ) {
-                    // Checks middle-left platform.
-                    if( headX >= 5 && headX <= 155 ) {
-                        falling = true;
-                        jumpKeyPressed = false;
-                        counter = 21;
-                        hitPlatformFall = true;
-                    }
-                    // Checks middle-center platform.
-                    if( headX >= 215 && headX <= 375 ) {
-                        falling = true;
-                        jumpKeyPressed = false;
-                        counter = 21;
-                        hitPlatformFall = true;
-                    }
-                    // Checks middle-right platform.
-                    if( headX >= 435 && headX <= 595 ) {
-                        falling = true;
-                        jumpKeyPressed = false;
-                        counter = 21;
-                        hitPlatformFall = true;
-                        
-                    }
-                }// Checks top platform.
-                else if( headY >= 265 && headY <= 275 ) {
-                    
-                    if( headX >= 275 && headX <= 325 ) {
-                        falling = true;
-                        jumpKeyPressed = false;
-                        counter = 21;
-                        hitPlatformFall = true;
-                    }
-                }
-                
-                // Ensures BitMan cannot go through the sides of the middle platforms.
-                if( leftLegEndY > 409 && headY < 425 ) {
-                    // Checks right side of middle-left platform.
-                    if( leftLegEndX <= 172 && leftLegEndX >= 162) {
-                        headX = 160;
-                        bodyStartX = 165;
-                        bodyEndX = 165;
-                        armStartX = 160;
-                        armEndX = 170;
-                        rightLegEndX = 158;
-                        leftLegEndX= 172;
-                    }
-                    // Checks left side of middle-center platform.
-                    if ( leftLegEndX >= 221 && leftLegEndX <= 231 ) {
-                        headX = 209;
-                        bodyStartX = 214;
-                        bodyEndX = 214;
-                        armStartX = 209;
-                        armEndX = 219;
-                        rightLegEndX = 207;
-                        leftLegEndX = 221;
-                    }
-                    // Checks right side of middle-center platform.
-                    if( leftLegEndX <= 392 && leftLegEndX >= 382 ) {
-                        headX =  380;
-                        bodyStartX= 385;
-                        bodyEndX = 385;
-                        armStartX = 380;
-                        armEndX = 390;
-                        rightLegEndX = 378;
-                        leftLegEndX = 392;
-                    }
-                    // Checks left side of middle-right platform.
-                    if( leftLegEndX >= 427 && leftLegEndX <= 447 ) {
-                        headX = 429;
-                        bodyStartX = 434;
-                        bodyEndX = 434;
-                        armStartX = 429;
-                        armEndX = 439;
-                        rightLegEndX = 427;
-                        leftLegEndX = 441;
-                    }
-                } // Ensures BitMan cannot go through the sides of the top platform.
-                else if( leftLegEndY > 245 && headY < 275 ) {
-                    // Checks left side of top platform.
-                    if( leftLegEndX >= 271 && leftLegEndX <= 281) {
-                        headX = 259;
-                        bodyStartX = 264;
-                        bodyEndX = 264;
-                        armStartX = 259;
-                        armEndX = 269;
-                        rightLegEndX = 257;
-                        leftLegEndX = 271;
-                    }
-                    
-                    // Checks right side of top platform.
-                    if( leftLegEndX >= 334 && leftLegEndX <= 344 ) {
-                        headX = 332;
-                        bodyStartX = 337;
-                        bodyEndX = 337;
-                        armStartX = 332;
-                        armEndX = 342;
-                        rightLegEndX = 330;
-                        leftLegEndX = 344;
-                    }
-                }
-                
-                // Adjusts BitMan's coordinates if it is determined that he should be falling.
+		// Checks top platform.
+		else if ((headY >= 265) && (headY <= 275)) {
+
+			if ((headX >= 275) && (headX <= 325)) {
+				falling = true;
+				jumpKeyPressed = false;
+				counter = 21;
+				hitPlatformFall = true;
+			}
+		}
+
+		// Ensures BitMan cannot go through the sides of the middle platforms.
+		if ((leftLegEndY > 409) && (headY < 425)) {
+			// Checks right side of middle-left platform.
+			if ((leftLegEndX <= 172) && (leftLegEndX >= 162)) {
+				headX = 160;
+				bodyStartX = 165;
+				bodyEndX = 165;
+				armStartX = 160;
+				armEndX = 170;
+				rightLegEndX = 158;
+				leftLegEndX = 172;
+			}
+			// Checks left side of middle-centre platform.
+			if ((leftLegEndX >= 221) && (leftLegEndX <= 231)) {
+				headX = 209;
+				bodyStartX = 214;
+				bodyEndX = 214;
+				armStartX = 209;
+				armEndX = 219;
+				rightLegEndX = 207;
+				leftLegEndX = 221;
+			}
+			// Checks right side of middle-centre platform.
+			if ((leftLegEndX <= 392) && (leftLegEndX >= 382)) {
+				headX = 380;
+				bodyStartX = 385;
+				bodyEndX = 385;
+				armStartX = 380;
+				armEndX = 390;
+				rightLegEndX = 378;
+				leftLegEndX = 392;
+			}
+			// Checks left side of middle-right platform.
+			if ((leftLegEndX >= 427) && (leftLegEndX <= 447)) {
+				headX = 429;
+				bodyStartX = 434;
+				bodyEndX = 434;
+				armStartX = 429;
+				armEndX = 439;
+				rightLegEndX = 427;
+				leftLegEndX = 441;
+			}
+		} // Ensures BitMan cannot go through the sides of the top platform.
+		else if ((leftLegEndY > 245) && (headY < 275)) {
+			// Checks left side of top platform.
+			if ((leftLegEndX >= 271) && (leftLegEndX <= 281)) {
+				headX = 259;
+				bodyStartX = 264;
+				bodyEndX = 264;
+				armStartX = 259;
+				armEndX = 269;
+				rightLegEndX = 257;
+				leftLegEndX = 271;
+			}
+
+			// Checks right side of top platform.
+			if ((leftLegEndX >= 334) && (leftLegEndX <= 344)) {
+				headX = 332;
+				bodyStartX = 337;
+				bodyEndX = 337;
+				armStartX = 332;
+				armEndX = 342;
+				rightLegEndX = 330;
+				leftLegEndX = 344;
+			}
+		}
+
+		// Adjusts BitMan's coordinates if it is determined that he should be
+		// falling.
 		if (falling) {
 			headY += velocityY;
 			bodyStartY += velocityY;
@@ -518,27 +509,29 @@ public class MainThread implements Runnable {
 			rightLegEndY += velocityY;
 			leftLegEndY += velocityY;
 		}
-                // Ensures BitMan cannot go through left side of scren.
-                if( headX <= 12 ) {
-                    headX = 12;
-                    bodyStartX = 17;
-                    bodyEndX = 17;
-                    armStartX = 12;
-                    armEndX = 22;
-                    rightLegEndX = 10;
-                    leftLegEndX = 24;
-                }
-                // Ensures BitMan cannot go through right side of screen.
-                else if( headX >= 577 ) {
-                    headX = 577;
-                    bodyStartX = 582;
-                    bodyEndX = 582;
-                    armEndX = 587;
-                    rightLegEndX = 575;
-                    leftLegEndX = 589;
-                    armStartX = 577;
-                }
-                // Adjusts BitMan's coordinates if it is determined that he should be jumping.               
+
+		// Ensures BitMan cannot go through left side of screen.
+		if (headX <= 12) {
+			headX = 12;
+			bodyStartX = 17;
+			bodyEndX = 17;
+			armStartX = 12;
+			armEndX = 22;
+			rightLegEndX = 10;
+			leftLegEndX = 24;
+		}
+		// Ensures BitMan cannot go through right side of screen.
+		else if (headX >= 577) {
+			headX = 577;
+			bodyStartX = 582;
+			bodyEndX = 582;
+			armEndX = 587;
+			rightLegEndX = 575;
+			leftLegEndX = 589;
+			armStartX = 577;
+		}
+		// Adjusts BitMan's coordinates if it is determined that he should be
+		// jumping.
 		if (!hitPlatformFall && jumpKeyPressed && (counter <= 20)) {
 			headY -= velocityY;
 			bodyStartY -= velocityY;
@@ -549,17 +542,17 @@ public class MainThread implements Runnable {
 			leftLegEndY -= velocityY;
 			counter++;
 		}
-                // Makes BitMan fall if he has jumped for too long.
+		// Makes BitMan fall if he has jumped for too long.
 		else if (jumpKeyPressed && (counter > 20)) {
 			jumpKeyPressed = false;
 		}
-                
+
 		if (!jumpKeyPressed) {
 			falling = true;
 		} else {
 			falling = false;
 		}
-                // Adjusts BitMan's coordinates if he sould be moving to the right.
+		// Adjusts BitMan's coordinates if he should be moving to the right.
 		if (rightKeyPressed) {
 			headX += velocityX;
 			bodyStartX += velocityX;
@@ -570,7 +563,7 @@ public class MainThread implements Runnable {
 			leftLegEndX += velocityX;
 
 		}
-                // Adjusts BitMan's coordinates if he should be moving
+		// Adjusts BitMan's coordinates if he should be moving
 		if (leftKeyPressed) {
 			headX -= velocityX;
 			bodyStartX -= velocityX;
@@ -707,33 +700,33 @@ public class MainThread implements Runnable {
 	/**
 	 * Thread which calls the rendering, then the painting. It sets the frame
 	 * rate, and the game opening systems. It is the main graphics THREAD. The
-	 * others haven't been localized into their respective threads yet.
+	 * others haven't been localised into their respective threads yet.
 	 */
 	@Override
 	public void run() {
 		running = true;
 
 		// Choices
-		String[] possibilities = { "Easy", "Normal", "Hard", "Cancel" };
+		String[] possibilities = { "Easy", "Normal", "Hard" };
 
 		// Input System
-		int difficulty = JOptionPane.showOptionDialog( null, "Choose one", "RunBitMan2", 
-		JOptionPane.DEFAULT_OPTION, 
-                JOptionPane.PLAIN_MESSAGE, null, 
-                possibilities, possibilities[ 0 ] );
+		String s = (String) JOptionPane.showInputDialog(null,
+				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
+				null, possibilities, "Easy");
 
-		long speedDeclare = 45;
-		if (difficulty == 0) {
-			speedDeclare = 45;
-		}
-		else if (difficulty == 1) {
-			speedDeclare = 30;
-		}
-		else if (difficulty == 2) {
-			speedDeclare = 15;
-		}
-		else if(difficulty == 3 ) {
-			System.exit( 0 );
+		long speedDeclare = 100;
+		if ((s != null) && (s.length() > 0)) {
+			if (s.equals("Easy")) {
+				speedDeclare = 45;
+			}
+			if (s.equals("Normal")) {
+				speedDeclare = 30;
+			}
+			if (s.equals("Hard")) {
+				speedDeclare = 20;
+			}
+		} else {
+			System.exit(0);
 		}
 		final long speed = speedDeclare;
 
@@ -779,6 +772,58 @@ public class MainThread implements Runnable {
 		if ((animator == null) || !running) {
 			animator = new Thread(this);
 			animator.start();
+		}
+	}
+
+	/*
+	 * public void freezeVersion() { bluHeadX = ; bluHeadY = ; magHeadX = ;
+	 * magHeadY = ; blaHeadX = ; blaHeadY = ; oraHeadX = ; oraHeadY = ; headX =
+	 * ; headY = ; bodyStartX = ; bodyStartY = ; bodyEndX = ; bodyEndY = ;
+	 * armStartX = ; armStartY = ; armEndX = ; armEndY = ; rightLegEndX = ;
+	 * rightLegEndY = ; leftLegEndX = ; leftLegEndY = ; Block = ; difficulty = ;
+	 * }
+	 */
+
+	/**
+	 * Read configuration of the programme from file. This is currently not
+	 * used. The source is copied from iFlyCode/JavaPy's package involving.
+	 * 
+	 * @author ifly6
+	 * @see iFlyCode/JavaPy
+	 * @see javapy.files.FileReading
+	 */
+	public void readConfig(String file) {
+		try {
+			FileReader configRead;
+			configRead = new FileReader(file);
+			Scanner scan = new Scanner(configRead);
+			while (scan.hasNext()) {
+				bluHeadX = scan.nextInt();
+				bluHeadY = scan.nextInt();
+				magHeadX = scan.nextInt();
+				magHeadY = scan.nextInt();
+				blaHeadX = scan.nextInt();
+				blaHeadY = scan.nextInt();
+				oraHeadX = scan.nextInt();
+				oraHeadY = scan.nextInt();
+				headX = scan.nextInt();
+				headY = scan.nextInt();
+				bodyStartX = scan.nextInt();
+				bodyStartY = scan.nextInt();
+				bodyEndX = scan.nextInt();
+				bodyEndY = scan.nextInt();
+				armStartX = scan.nextInt();
+				armStartY = scan.nextInt();
+				armEndX = scan.nextInt();
+				armEndY = scan.nextInt();
+				rightLegEndX = scan.nextInt();
+				rightLegEndY = scan.nextInt();
+				leftLegEndX = scan.nextInt();
+				leftLegEndY = scan.nextInt();
+				Block = scan.nextInt();
+				difficulty = scan.nextLine();
+			}
+		} catch (FileNotFoundException e) {
 		}
 	}
 }
