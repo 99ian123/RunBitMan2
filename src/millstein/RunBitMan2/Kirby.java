@@ -1,135 +1,11 @@
 package millstein.RunBitMan2;
 
 import java.awt.Color;
-<<<<<<< HEAD:src/millstein/RunBitMan2/MainThread.java
-import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-/**
- * Programme to be a rudimentary game.
- * 
- * @author 99ian123 - Designer
- * @author ifly6 - Editor
- * @author kullalok - Consultant
- * 
- * @since 29 March 2013
- */
-
-/*
- * TODO Add a background or something (it makes it look better)
- * 
- * TODO Split into more than one class for maintenance purposes.
- * 
- * TODO Fix reset after BitMan loses.
- */
-
-public class MainThread implements Runnable {
-
-
-	// Graphics
-	public Graphics dbg;
-	protected int bluHeadX = 225, bluHeadY = 369;
-	protected int magHeadX = 285, magHeadY = 479;
-	protected int blaHeadX = 70, blaHeadY = 369;
-	protected int oraHeadX = 520, oraHeadY = 354;
-	protected int headX = 292, headY = 215;
-	protected int bodyStartX = 297, bodyStartY = 225, bodyEndX = 297,
-			bodyEndY = 240;
-	protected int armStartX = 292, armStartY = 234, armEndX = 302,
-			armEndY = 234;
-	protected int rightLegEndX = 290, rightLegEndY = 249, leftLegEndX = 304,
-			leftLegEndY = 249;
-
-	protected int Block = 500;
-	// Controls
-	protected boolean jumpKeyPressed, rightKeyPressed, leftKeyPressed, falling;
-	protected float velocityX = 5, velocityY = 5, gravity = 0.5f;
-	protected int counter;
-	protected int directionBlu;
-	protected int directionMag;
-	protected int directionBla;
-	protected int diredctionOra;
-	protected static String difficulty;
-	private KeyHandler handler;
-	// Screen
-	protected static JFrame frame = new JFrame();
-
-	/**
-	 * Main. Sets difficulty, then constructs the other things. Calls the
-	 * constructor.
-	 * 
-	 * @param args
-	 *            - No arguments are taken from the Main.
-	 */
-	public static void main(String[] args) {
-
-		// Construct Frame
-		Runnable construct = new Runnable() {
-			@Override
-			public void run() {
-				new MainThread();
-			}
-		};
-		construct.run();
-
-		// Add Window Listener
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-	}
-
-	protected Image dbImage = null;
-	protected int dbHeight = 600, dbWidth = 600;
-
-	protected int score, life = 3;
-	protected Container container;
-
-	// Program
-	protected boolean running;
-
-	protected Thread animator;
-
-	/**
-	 * Constructor. It sets the frame, then creates a runnable for starting the
-	 * game - and calls startGame(). It then adds the handler for the keys and
-	 * sets the frame to visible.
-	 */
-	MainThread() { // Constructor
-
-		frame.setTitle("RunBitMan 2");
-		container = frame.getContentPane();
-
-		Runnable startGame = new Runnable() {
-			@Override
-			public void run() {
-				startGame();
-			}
-		};
-		startGame.run();
-
-		handler = new KeyHandler();
-		frame.addKeyListener(handler);
-		frame.setSize(600, 600);
-		frame.setVisible(true);
-=======
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
->>>>>>> moved it into types of games, and implemented an interface for them.:src/millstein/RunBitMan2/Kirby.java
 
 public class Kirby extends Game implements LevelPlugin {
 
@@ -359,12 +235,9 @@ public class Kirby extends Game implements LevelPlugin {
 	public void gameRenderMovement() {
 
 		boolean hitPlatformFall = false; // Boolean to hold whether or not
-										// BitMan is falling due to hitting
+											// BitMan is falling due to hitting
 											// a platform on the underside.
-		jumpKeyPressed = handler.getJumpKeyPressed();
-		rightKeyPressed = handler.getRightKeyPressed();
-		leftKeyPressed = hander.getLeftKeyPressed();
-		
+
 		// Determines whether or not BitMan has landed on a platform and stops
 		// him from falling if so.
 		if ((rightLegEndY >= 245) && (leftLegEndY <= 255)) {

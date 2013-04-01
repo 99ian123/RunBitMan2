@@ -126,8 +126,6 @@ public class Game {
 	 */
 	public static void main(String[] args) {
 
-		new Game();
-
 		// Add Window Listener
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -191,14 +189,11 @@ public class Game {
 	 */
 	public void paintScreen() {
 		Graphics g;
-		try {
-			g = frame.getGraphics();
-			if ((g != null) && (dbImage != null)) {
-				g.drawImage(dbImage, 0, 0, null);
-				Toolkit.getDefaultToolkit().sync();
-				g.dispose();
-			}
-		} catch (Exception e) {
+		g = frame.getGraphics();
+		if ((g != null) && (dbImage != null)) {
+			g.drawImage(dbImage, 0, 0, null);
+			Toolkit.getDefaultToolkit().sync();
+			g.dispose();
 		}
 	}
 
