@@ -1,6 +1,7 @@
 package millstein.RunBitMan2;
 
 import java.awt.Color;
+<<<<<<< HEAD:src/millstein/RunBitMan2/MainThread.java
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -122,8 +123,15 @@ public class MainThread implements Runnable {
 		frame.addKeyListener(handler);
 		frame.setSize(600, 600);
 		frame.setVisible(true);
+=======
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
 
-	}
+import javax.swing.JOptionPane;
+>>>>>>> moved it into types of games, and implemented an interface for them.:src/millstein/RunBitMan2/Kirby.java
+
+public class Kirby extends Game implements LevelPlugin {
 
 	/**
 	 * Thread and data to render the hit boxes of all the mobs and of the player
@@ -132,9 +140,9 @@ public class MainThread implements Runnable {
 	 * @param pauseTime
 	 *            - amount of time the thread will slow the frame-rate when hit.
 	 */
+	@Override
 	public void gameRenderHitbox(final long pauseTime) {
 		try {
-			GameMode mode = new GameMode();
 			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
 				if ((rightLegEndY >= bluHeadY)
 						&& (rightLegEndY <= (bluHeadY + 30))) {
@@ -142,7 +150,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						mode.lost();
+						lost();
 					}
 				}
 			}
@@ -154,7 +162,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						mode.lost();
+						lost();
 					}
 
 				}
@@ -168,7 +176,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						mode.lost();
+						lost();
 					}
 
 				}
@@ -182,7 +190,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						mode.lost();
+						lost();
 					}
 
 				}
@@ -196,7 +204,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						mode.lost();
+						lost();
 					}
 				}
 			}
@@ -217,8 +225,89 @@ public class MainThread implements Runnable {
 	}
 
 	/**
+	 * Resets the variables which are required when you lose.
+	 */
+	@Override
+	public void lost() {
+
+		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
+				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE);
+
+		// Reset Possibly Stuck Keys
+		leftKeyPressed = false;
+		jumpKeyPressed = false;
+		rightKeyPressed = false;
+
+		// Reset Score and Lives
+		score = 0;
+		life = 3;
+
+		// Set Positions for Player Character
+		headY = 211;
+		bodyStartY = 221;
+		bodyEndY = 236;
+		armStartY = 230;
+		armEndY = 230;
+		rightLegEndY = 245;
+		leftLegEndY = 245;
+
+		headX = 292;
+		bodyStartX = 297;
+		bodyEndX = 297;
+		armStartX = 292;
+		armEndX = 302;
+		rightLegEndX = 290;
+		leftLegEndX = 304;
+	}
+
+	/**
+	 * Read configuration of the programme from file. This is currently not
+	 * used. The source is copied from iFlyCode/JavaPy's package involving.
+	 * 
+	 * @author ifly6
+	 * @see iFlyCode/JavaPy
+	 * @see javapy.files.FileReading
+	 */
+	@Override
+	public void readConfig(String file) {
+		try {
+			FileReader configRead;
+			configRead = new FileReader(file);
+			Scanner scan = new Scanner(configRead);
+			while (scan.hasNext()) {
+				bluHeadX = scan.nextInt();
+				bluHeadY = scan.nextInt();
+				magHeadX = scan.nextInt();
+				magHeadY = scan.nextInt();
+				blaHeadX = scan.nextInt();
+				blaHeadY = scan.nextInt();
+				oraHeadX = scan.nextInt();
+				oraHeadY = scan.nextInt();
+				headX = scan.nextInt();
+				headY = scan.nextInt();
+				bodyStartX = scan.nextInt();
+				bodyStartY = scan.nextInt();
+				bodyEndX = scan.nextInt();
+				bodyEndY = scan.nextInt();
+				armStartX = scan.nextInt();
+				armStartY = scan.nextInt();
+				armEndX = scan.nextInt();
+				armEndY = scan.nextInt();
+				rightLegEndX = scan.nextInt();
+				rightLegEndY = scan.nextInt();
+				leftLegEndX = scan.nextInt();
+				leftLegEndY = scan.nextInt();
+				Block = scan.nextInt();
+				difficulty = scan.nextLine();
+			}
+		} catch (FileNotFoundException e) {
+		}
+	}
+
+	/**
 	 * Method renders all the Mobs in the Game.
 	 */
+	@Override
 	public void gameRenderMobs() {
 
 		// Mob Movement
@@ -266,6 +355,7 @@ public class MainThread implements Runnable {
 	/**
 	 * Renders movement of the player Character.
 	 */
+	@Override
 	public void gameRenderMovement() {
 
 		boolean hitPlatformFall = false; // Boolean to hold whether or not
@@ -312,7 +402,7 @@ public class MainThread implements Runnable {
 				falling = false;
 				counter = 0;
 			}
-			// Checks the middle-center platform.
+			// Checks the middle-centre platform.
 			if ((rightLegEndX >= 215) && (leftLegEndX <= 385)) {
 				headY = 360;
 				bodyStartY = 370;
@@ -467,8 +557,7 @@ public class MainThread implements Runnable {
 			leftLegEndX = 589;
 			armStartX = 577;
 		}
-		// Adjusts BitMan's coordinates if it is determined that he should be
-		// jumping.
+		// Adjusts BitMan's coordinates if he is jumping
 		if (!hitPlatformFall && jumpKeyPressed && (counter <= 20)) {
 			headY -= velocityY;
 			bodyStartY -= velocityY;
@@ -515,6 +604,7 @@ public class MainThread implements Runnable {
 	/**
 	 * Renders the Objects.
 	 */
+	@Override
 	public void gameRenderObjects() {
 
 		if (dbImage == null) {
@@ -581,56 +671,31 @@ public class MainThread implements Runnable {
 		dbg.drawString("Lives remaining: " + life, 25, 120);
 	}
 
-	/**
-	 * Updates the screen with the new data provided by the many gameRender
-	 * methods.
-	 */
-	public void paintScreen() {
-		Graphics g;
-		try {
-			g = frame.getGraphics();
-			if ((g != null) && (dbImage != null)) {
-				g.drawImage(dbImage, 0, 0, null);
-				Toolkit.getDefaultToolkit().sync();
-				g.dispose();
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	// Opens Screen
-	/**
-	 * Thread which calls the rendering, then the painting. It sets the frame
-	 * rate, and the game opening systems. It is the main graphics THREAD. The
-	 * others haven't been localised into their respective threads yet.
-	 */
 	@Override
-	public void run() {
-		running = true;
+	public void cycler() {
 
 		// Choices
-		String[] possibilities = { "Easy", "Normal", "Hard" };
+		String[] speedModes = { "Easy", "Normal", "Hard" };
 
 		// Input System
-		String s = (String) JOptionPane.showInputDialog(null,
+		String speedSelect = (String) JOptionPane.showInputDialog(null,
 				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
-				null, possibilities, "Easy");
+				null, speedModes, "Easy");
 
-		long speedDeclare = 100;
-		if ((s != null) && (s.length() > 0)) {
-			if (s.equals("Easy")) {
-				speedDeclare = 45;
+		long speed = 100;
+		if ((speedSelect != null) && (speedSelect.length() > 0)) {
+			if (speedSelect.equals("Easy")) {
+				speed = 45;
 			}
-			if (s.equals("Normal")) {
-				speedDeclare = 30;
+			if (speedSelect.equals("Normal")) {
+				speed = 30;
 			}
-			if (s.equals("Hard")) {
-				speedDeclare = 20;
+			if (speedSelect.equals("Hard")) {
+				speed = 20;
 			}
 		} else {
 			System.exit(0);
 		}
-		final long speed = speedDeclare;
 
 		gameRenderObjects();
 		gameRenderMovement();
@@ -644,44 +709,17 @@ public class MainThread implements Runnable {
 		}
 
 		// While Loop to Repaint the Screen
-		Runnable graphicsThread = new Runnable() {
-			@Override
-			public void run() {
-				while (running) {
-					gameRenderObjects();
-					gameRenderMovement();
-					gameRenderMobs();
-					paintScreen();
-					gameRenderHitbox(500);
+		while (true) {
+			gameRenderObjects();
+			gameRenderMovement();
+			gameRenderMobs();
+			paintScreen();
+			gameRenderHitbox(500);
 
-					try {
-						Thread.sleep(speed);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+			try {
+				Thread.sleep(speed);
+			} catch (InterruptedException e) {
 			}
-		};
-
-		graphicsThread.run();
-	}
-
-	/**
-	 * Starts the game, creating the animation system - with the thread, Run.
-	 */
-	void startGame() {
-		if ((animator == null) || !running) {
-			animator = new Thread(this);
-			animator.start();
 		}
 	}
-
-	/*
-	 * public void freezeVersion() { bluHeadX = ; bluHeadY = ; magHeadX = ;
-	 * magHeadY = ; blaHeadX = ; blaHeadY = ; oraHeadX = ; oraHeadY = ; headX =
-	 * ; headY = ; bodyStartX = ; bodyStartY = ; bodyEndX = ; bodyEndY = ;
-	 * armStartX = ; armStartY = ; armEndX = ; armEndY = ; rightLegEndX = ;
-	 * rightLegEndY = ; leftLegEndX = ; leftLegEndY = ; Block = ; difficulty = ;
-	 * }
-	 */
 }
