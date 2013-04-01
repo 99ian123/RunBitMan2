@@ -192,6 +192,7 @@ public class MainThread implements Runnable {
 	 */
 	public void gameRenderHitbox(final long pauseTime) {
 		try {
+			GameMode mode = new GameMode();
 			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
 				if ((rightLegEndY >= bluHeadY)
 						&& (rightLegEndY <= (bluHeadY + 30))) {
@@ -199,7 +200,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						lost();
+						mode.lost();
 					}
 				}
 			}
@@ -211,7 +212,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						lost();
+						mode.lost();
 					}
 
 				}
@@ -225,7 +226,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						lost();
+						mode.lost();
 					}
 
 				}
@@ -239,7 +240,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						lost();
+						mode.lost();
 					}
 
 				}
@@ -253,7 +254,7 @@ public class MainThread implements Runnable {
 					life--;
 
 					if (life == 0) {
-						lost();
+						mode.lost();
 					}
 				}
 			}
@@ -738,49 +739,4 @@ public class MainThread implements Runnable {
 	 * rightLegEndY = ; leftLegEndX = ; leftLegEndY = ; Block = ; difficulty = ;
 	 * }
 	 */
-
-<<<<<<< HEAD
-	/**
-	 * Read configuration of the programme from file. This is currently not
-	 * used. The source is copied from iFlyCode/JavaPy's package involving.
-	 * 
-	 * @author ifly6
-	 * @see iFlyCode/JavaPy
-	 * @see javapy.files.FileReading
-	 */
-	public void readConfig(String file) {
-		try {
-			BufferedReader configRead = new BufferedReader( new FileReader( file ) );
-			Scanner scan = new Scanner(configRead);
-			while (scan.hasNext()) {
-				bluHeadX = scan.nextInt();
-				bluHeadY = scan.nextInt();
-				magHeadX = scan.nextInt();
-				magHeadY = scan.nextInt();
-				blaHeadX = scan.nextInt();
-				blaHeadY = scan.nextInt();
-				oraHeadX = scan.nextInt();
-				oraHeadY = scan.nextInt();
-				headX = scan.nextInt();
-				headY = scan.nextInt();
-				bodyStartX = scan.nextInt();
-				bodyStartY = scan.nextInt();
-				bodyEndX = scan.nextInt();
-				bodyEndY = scan.nextInt();
-				armStartX = scan.nextInt();
-				armStartY = scan.nextInt();
-				armEndX = scan.nextInt();
-				armEndY = scan.nextInt();
-				rightLegEndX = scan.nextInt();
-				rightLegEndY = scan.nextInt();
-				leftLegEndX = scan.nextInt();
-				leftLegEndY = scan.nextInt();
-				Block = scan.nextInt();
-				difficulty = scan.nextLine();
-			}
-		} catch (FileNotFoundException e) {
-		}
-	}
-=======
->>>>>>> moved out some methods to gamemode.java
 }
