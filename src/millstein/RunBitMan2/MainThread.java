@@ -33,64 +33,6 @@ import javax.swing.JOptionPane;
 
 public class MainThread implements Runnable {
 
-	/**
-	 * Handles the Key pressing. Then sets system-wide data with stimuli, which
-	 * is read by while loop.
-	 */
-	private class KeyHandler extends KeyAdapter {
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			int key = e.getKeyCode();
-
-			if ((key == KeyEvent.VK_Q) || (key == KeyEvent.VK_ESCAPE)) {
-				System.exit(0);
-			}
-			if (key == KeyEvent.VK_H) {
-				String helpString = "Standard Controls are WASD and/or stanadard keypad controls."
-						+ "\nPress Q to Quit, I for information, and H to show this.";
-				JOptionPane.showMessageDialog(null, helpString);
-			}
-			if (key == KeyEvent.VK_I) {
-				String helpString = "Authors:"
-						+ "\n99ian123 - Designer \nifly6 - Editor \nkullalok - Consulting";
-				JOptionPane.showMessageDialog(null, helpString);
-			}
-
-			// Movement
-			if ((e.getKeyCode() == KeyEvent.VK_W)
-					|| (e.getKeyCode() == KeyEvent.VK_UP)) {
-				jumpKeyPressed = true;
-			}
-
-			if ((e.getKeyCode() == KeyEvent.VK_D)
-					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
-				rightKeyPressed = true;
-			}
-
-			if ((e.getKeyCode() == KeyEvent.VK_A)
-					|| (e.getKeyCode() == KeyEvent.VK_LEFT)) {
-				leftKeyPressed = true;
-			}
-
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			if ((e.getKeyCode() == KeyEvent.VK_W)
-					|| (e.getKeyCode() == KeyEvent.VK_UP)) {
-				jumpKeyPressed = false;
-			}
-			if ((e.getKeyCode() == KeyEvent.VK_D)
-					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
-				rightKeyPressed = false;
-			}
-			if ((e.getKeyCode() == KeyEvent.VK_A)
-					|| (e.getKeyCode() == KeyEvent.VK_LEFT)) {
-				leftKeyPressed = false;
-			}
-		}
-	}
 
 	// Graphics
 	public Graphics dbg;
@@ -116,7 +58,7 @@ public class MainThread implements Runnable {
 	protected int directionBla;
 	protected int diredctionOra;
 	protected static String difficulty;
-
+	private KeyHandler handler;
 	// Screen
 	protected static JFrame frame = new JFrame();
 
@@ -176,7 +118,7 @@ public class MainThread implements Runnable {
 		};
 		startGame.run();
 
-		KeyHandler handler = new KeyHandler();
+		handler = new KeyHandler();
 		frame.addKeyListener(handler);
 		frame.setSize(600, 600);
 		frame.setVisible(true);
@@ -327,9 +269,12 @@ public class MainThread implements Runnable {
 	public void gameRenderMovement() {
 
 		boolean hitPlatformFall = false; // Boolean to hold whether or not
-											// BitMan is falling due to hitting
+										// BitMan is falling due to hitting
 											// a platform on the underside.
-
+		jumpKeyPressed = handler.getJumpKeyPressed();
+		rightKeyPressed = handler.getRightKeyPressed();
+		leftKeyPressed = hander.getLeftKeyPressed();
+		
 		// Determines whether or not BitMan has landed on a platform and stops
 		// him from falling if so.
 		if ((rightLegEndY >= 245) && (leftLegEndY <= 255)) {
