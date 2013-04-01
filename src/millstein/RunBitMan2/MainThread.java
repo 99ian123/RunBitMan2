@@ -794,8 +794,7 @@ public class MainThread implements Runnable {
 	 */
 	public void readConfig(String file) {
 		try {
-			FileReader configRead;
-			configRead = new FileReader(file);
+			BufferedReader configRead = new BufferedReader( new FileReader( file ) );
 			Scanner scan = new Scanner(configRead);
 			while (scan.hasNext()) {
 				bluHeadX = scan.nextInt();
