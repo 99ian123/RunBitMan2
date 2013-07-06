@@ -3,15 +3,18 @@ package millstein.RunBitMan2;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JOptionPane;
 
 public class Kirby extends Game implements LevelPlugin {
 
-	boolean justHit = false;
-	boolean invincible = false;
-	boolean beingReset = false;
+	ArrayList<Integer> initial = new ArrayList<Integer>(0);
+	AtomicBoolean justHit = new AtomicBoolean();
+	AtomicBoolean invincible = new AtomicBoolean();
+	AtomicBoolean beingReset = new AtomicBoolean();
 	long resetSpeed;
 
 	/**
@@ -23,14 +26,23 @@ public class Kirby extends Game implements LevelPlugin {
 	 */
 	@Override
 	public void gameRenderHitbox(final long pauseTime) {
-		if (justHit == false) {
+
+		// Make sure the program is getting the correct data.
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		if (justHit.get() == false) {
 			try {
 				if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
 					if ((rightLegEndY >= bluHeadY)
 							&& (rightLegEndY <= (bluHeadY + 30))) {
 						Thread.sleep(pauseTime);
 						life--;
-						justHit = true;
+						justHit.compareAndSet(false, true);
+						resetJustHit.run();
 
 						if (life == 0) {
 							lost();
@@ -43,7 +55,8 @@ public class Kirby extends Game implements LevelPlugin {
 							&& (rightLegEndY <= (blaHeadY + 30))) {
 						Thread.sleep(pauseTime);
 						life--;
-						justHit = true;
+						justHit.getAndSet(true);
+						resetJustHit.run();
 
 						if (life == 0) {
 							lost();
@@ -58,7 +71,8 @@ public class Kirby extends Game implements LevelPlugin {
 							&& (rightLegEndY <= (oraHeadY + 30))) {
 						Thread.sleep(pauseTime);
 						life--;
-						justHit = true;
+						justHit.getAndSet(true);
+						resetJustHit.run();
 
 						if (life == 0) {
 							lost();
@@ -73,7 +87,8 @@ public class Kirby extends Game implements LevelPlugin {
 							&& (rightLegEndY <= (magHeadY + 30))) {
 						Thread.sleep(pauseTime);
 						life--;
-						justHit = true;
+						justHit.set(true);
+						resetJustHit.run();
 
 						if (life == 0) {
 							lost();
@@ -88,26 +103,28 @@ public class Kirby extends Game implements LevelPlugin {
 							&& (rightLegEndY <= (magHeadY + 30))) {
 						Thread.sleep(pauseTime);
 						life--;
-						justHit = true;
+						justHit.set(true);
+						resetJustHit.run();
 
 						if (life == 0) {
 							lost();
 						}
 					}
 				}
-
-				if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
-					if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
-						score++;
-
-						int randNum = (int) (Math.random() * 500);
-						if (randNum < 110) {
-							randNum = 110;
-						}
-						Block = randNum;
-					}
-				}
 			} catch (InterruptedException e) {
+			}
+		}
+
+		// Separate the Block logic from the hitbox logic.
+		if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+			if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
+				score++;
+
+				int randNum = (int) (Math.random() * 500);
+				if (randNum < 110) {
+					randNum = 110;
+				}
+				Block = randNum;
 			}
 		}
 	}
@@ -150,7 +167,8 @@ public class Kirby extends Game implements LevelPlugin {
 
 	/**
 	 * Read configuration of the programme from file. This is currently not
-	 * used. The source is copied from iFlyCode/JavaPy's package involving.
+	 * used. The source is based on iFlyCode/JavaPy's package involving. I
+	 * intend that it replace all the hardcoded sections.
 	 * 
 	 * @author ifly6
 	 * @see iFlyCode/JavaPy
@@ -187,6 +205,43 @@ public class Kirby extends Game implements LevelPlugin {
 				Block = scan.nextInt();
 			}
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void saveConfig(String file) {
+		try {
+			FileReader configRead;
+			configRead = new FileReader(file);
+			Scanner scan = new Scanner(configRead);
+			while (scan.hasNext()) {
+				// These are in the same order as the readConfig system. They
+				// should be in that order as well.
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+				initial.add(scan.nextInt());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -244,9 +299,11 @@ public class Kirby extends Game implements LevelPlugin {
 	@Override
 	public void gameRenderMovement() {
 
-		boolean hitPlatformFall = false; // Boolean to hold whether or not
-		// BitMan is falling due to hitting
-		// a platform on the underside.
+		boolean hitPlatformFall = false;
+		/*
+		 * Boolean to hold whether or not BitMan is falling due to hitting a
+		 * platform on the underside.
+		 */
 
 		// Determines whether or not BitMan has landed on a platform and stops
 		// him from falling if so.
@@ -567,24 +624,26 @@ public class Kirby extends Game implements LevelPlugin {
 				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
 				null, speedModes, "Easy");
 
-		long resetSpeed = 0;
+		long resetSpeedInit = 0;
 		long speed = 100;
 		if ((speedSelect != null) && (speedSelect.length() > 0)) {
 			if (speedSelect.equals("Easy")) {
 				speed = 45;
-				resetSpeed = 2000;
+				resetSpeedInit = 1000;
 			}
 			if (speedSelect.equals("Normal")) {
 				speed = 30;
-				resetSpeed = 1500;
+				resetSpeedInit = 750;
 			}
 			if (speedSelect.equals("Hard")) {
 				speed = 20;
-				resetSpeed = 1000;
+				resetSpeedInit = 500;
 			}
 		} else {
 			System.exit(0);
 		}
+
+		resetSpeed = resetSpeedInit;
 
 		gameRenderObjects();
 		gameRenderMovement();
@@ -605,10 +664,8 @@ public class Kirby extends Game implements LevelPlugin {
 			paintScreen();
 			gameRenderHitbox(500);
 
-			if (justHit == true) {
-				resetJustHit.run();
-				beingReset = true;
-			}
+			// Testing
+			System.out.println("justHit = " + justHit.get());
 
 			try {
 				Thread.sleep(speed);
@@ -625,15 +682,19 @@ public class Kirby extends Game implements LevelPlugin {
 	 *            Must not be null. Is the period the system waits for you to be
 	 *            able to be hit again.
 	 */
-	private Runnable resetJustHit = new Runnable() {
+	public Runnable resetJustHit = new Runnable() {
 		@Override
 		public void run() {
-			if ((invincible == false) && (beingReset == false)) {
+			if (invincible.get() == false) {
 				try {
 					System.out.println("We've gotten to the resetting part.");
 					Thread.sleep(resetSpeed);
-					justHit = false;
-					beingReset = false;
+
+					// while (justHit.get() == true) {
+					justHit.set(false);
+					// }
+
+					System.out.println("== Reset.");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (NullPointerException e) {
