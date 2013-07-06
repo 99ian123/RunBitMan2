@@ -7,8 +7,12 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
-
 public class Kirby extends Game implements LevelPlugin {
+
+	boolean justHit = false;
+	boolean invincible = false;
+	boolean beingReset = false;
+	long resetSpeed;
 
 	/**
 	 * Thread and data to render the hit boxes of all the mobs and of the player
@@ -19,85 +23,92 @@ public class Kirby extends Game implements LevelPlugin {
 	 */
 	@Override
 	public void gameRenderHitbox(final long pauseTime) {
-		try {
-			if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
-				if ((rightLegEndY >= bluHeadY)
-						&& (rightLegEndY <= (bluHeadY + 30))) {
-					Thread.sleep(pauseTime);
-					life--;
+		if (justHit == false) {
+			try {
+				if (((armStartX <= (bluHeadX + 30)) && (armEndX >= bluHeadX))) {
+					if ((rightLegEndY >= bluHeadY)
+							&& (rightLegEndY <= (bluHeadY + 30))) {
+						Thread.sleep(pauseTime);
+						life--;
+						justHit = true;
 
-					if (life == 0) {
-						lost();
+						if (life == 0) {
+							lost();
+						}
 					}
 				}
-			}
 
-			if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
-				if ((rightLegEndY >= blaHeadY)
-						&& (rightLegEndY <= (blaHeadY + 30))) {
-					Thread.sleep(pauseTime);
-					life--;
+				if (((armStartX <= (blaHeadX + 30)) && (armEndX >= blaHeadX))) {
+					if ((rightLegEndY >= blaHeadY)
+							&& (rightLegEndY <= (blaHeadY + 30))) {
+						Thread.sleep(pauseTime);
+						life--;
+						justHit = true;
 
-					if (life == 0) {
-						lost();
-					}
+						if (life == 0) {
+							lost();
+						}
 
-				}
-
-			}
-
-			if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
-				if ((rightLegEndY >= oraHeadY)
-						&& (rightLegEndY <= (oraHeadY + 30))) {
-					Thread.sleep(pauseTime);
-					life--;
-
-					if (life == 0) {
-						lost();
 					}
 
 				}
 
-			}
+				if (((armStartX <= (oraHeadX + 30)) && (armEndX >= oraHeadX))) {
+					if ((rightLegEndY >= oraHeadY)
+							&& (rightLegEndY <= (oraHeadY + 30))) {
+						Thread.sleep(pauseTime);
+						life--;
+						justHit = true;
 
-			if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-					Thread.sleep(pauseTime);
-					life--;
+						if (life == 0) {
+							lost();
+						}
 
-					if (life == 0) {
-						lost();
 					}
 
 				}
 
-			}
+				if (((armStartX <= (magHeadX + 30)) && (armEndX >= magHeadX))) {
+					if ((rightLegEndY >= magHeadY)
+							&& (rightLegEndY <= (magHeadY + 30))) {
+						Thread.sleep(pauseTime);
+						life--;
+						justHit = true;
 
-			if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
-				if ((rightLegEndY >= magHeadY)
-						&& (rightLegEndY <= (magHeadY + 30))) {
-					Thread.sleep(pauseTime);
-					life--;
+						if (life == 0) {
+							lost();
+						}
 
-					if (life == 0) {
-						lost();
+					}
+
+				}
+
+				if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
+					if ((rightLegEndY >= magHeadY)
+							&& (rightLegEndY <= (magHeadY + 30))) {
+						Thread.sleep(pauseTime);
+						life--;
+						justHit = true;
+
+						if (life == 0) {
+							lost();
+						}
 					}
 				}
-			}
 
-			if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
-				if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
-					score++;
+				if (((armStartX <= (Block + 15)) && (armEndX >= Block))) {
+					if ((rightLegEndY >= 385) && (rightLegEndY <= 400)) {
+						score++;
 
-					int randNum = (int) (Math.random() * 500);
-					if (randNum < 110) {
-						randNum = 110;
+						int randNum = (int) (Math.random() * 500);
+						if (randNum < 110) {
+							randNum = 110;
+						}
+						Block = randNum;
 					}
-					Block = randNum;
 				}
+			} catch (InterruptedException e) {
 			}
-		} catch (InterruptedException e) {
 		}
 	}
 
@@ -234,8 +245,8 @@ public class Kirby extends Game implements LevelPlugin {
 	public void gameRenderMovement() {
 
 		boolean hitPlatformFall = false; // Boolean to hold whether or not
-											// BitMan is falling due to hitting
-											// a platform on the underside.
+		// BitMan is falling due to hitting
+		// a platform on the underside.
 
 		// Determines whether or not BitMan has landed on a platform and stops
 		// him from falling if so.
@@ -319,6 +330,7 @@ public class Kirby extends Game implements LevelPlugin {
 			falling = false;
 			counter = 0;
 		}
+
 		// Checks top platform.
 		else if ((headY >= 265) && (headY <= 275)) {
 
@@ -372,7 +384,8 @@ public class Kirby extends Game implements LevelPlugin {
 				rightLegEndX = 427;
 				leftLegEndX = 441;
 			}
-		} // Ensures BitMan cannot go through the sides of the top platform.
+		}
+		// Ensures BitMan cannot go through the sides of the top platform.
 		else if ((leftLegEndY > 245) && (headY < 275)) {
 			// Checks left side of top platform.
 			if ((leftLegEndX >= 271) && (leftLegEndX <= 281)) {
@@ -554,16 +567,20 @@ public class Kirby extends Game implements LevelPlugin {
 				"Choose Difficulty", "RunBitMan 2", JOptionPane.PLAIN_MESSAGE,
 				null, speedModes, "Easy");
 
+		long resetSpeed = 0;
 		long speed = 100;
 		if ((speedSelect != null) && (speedSelect.length() > 0)) {
 			if (speedSelect.equals("Easy")) {
 				speed = 45;
+				resetSpeed = 2000;
 			}
 			if (speedSelect.equals("Normal")) {
 				speed = 30;
+				resetSpeed = 1500;
 			}
 			if (speedSelect.equals("Hard")) {
 				speed = 20;
+				resetSpeed = 1000;
 			}
 		} else {
 			System.exit(0);
@@ -588,10 +605,45 @@ public class Kirby extends Game implements LevelPlugin {
 			paintScreen();
 			gameRenderHitbox(500);
 
+			if (justHit == true) {
+				resetJustHit.run();
+				beingReset = true;
+			}
+
 			try {
 				Thread.sleep(speed);
 			} catch (InterruptedException e) {
 			}
 		}
 	}
+
+	/**
+	 * Timer to reset the JustHit variable.
+	 * 
+	 * @author ifly6
+	 * @param justHit
+	 *            Must not be null. Is the period the system waits for you to be
+	 *            able to be hit again.
+	 */
+	private Runnable resetJustHit = new Runnable() {
+		@Override
+		public void run() {
+			if ((invincible == false) && (beingReset == false)) {
+				try {
+					System.out.println("We've gotten to the resetting part.");
+					Thread.sleep(resetSpeed);
+					justHit = false;
+					beingReset = false;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (NullPointerException e) {
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"Some developer has failed to include the resetSpeed "
+											+ "in the difficulty (or something) section. Complain to them.");
+				}
+			}
+		}
+	};
 }
