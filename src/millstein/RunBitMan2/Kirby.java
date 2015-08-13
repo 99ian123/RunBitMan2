@@ -98,7 +98,8 @@ public class Kirby extends Game implements LevelPlugin {
 
 				}
 
-				if (((rightLegEndX <= (magHeadX + 30)) && (rightLegEndX >= magHeadX))) {
+				if (((rightLegEndX <= (magHeadX + 30))
+						&& (rightLegEndX >= magHeadX))) {
 					if ((rightLegEndY >= magHeadY)
 							&& (rightLegEndY <= (magHeadY + 30))) {
 						Thread.sleep(pauseTime);
@@ -135,8 +136,9 @@ public class Kirby extends Game implements LevelPlugin {
 	@Override
 	public void lost() {
 
-		JOptionPane.showMessageDialog(null, "You Lose!\nYour high score was: "
-				+ score + " points", "Lost", JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"You Lose!\nYour high score was: " + score + " points", "Lost",
+				JOptionPane.WARNING_MESSAGE);
 
 		// Reset Possibly Stuck Keys
 		leftKeyPressed = false;
@@ -700,9 +702,7 @@ public class Kirby extends Game implements LevelPlugin {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (NullPointerException e) {
-					JOptionPane
-					.showMessageDialog(
-							null,
+					JOptionPane.showMessageDialog(null,
 							"Some developer has failed to include the resetSpeed "
 									+ "in the difficulty (or something) section. Complain to them.");
 				}
