@@ -20,7 +20,7 @@ public class Kirby extends Game implements LevelPlugin {
 	/**
 	 * Thread and data to render the hit boxes of all the mobs and of the player
 	 * character.
-	 * 
+	 *
 	 * @param pauseTime
 	 *            - amount of time the thread will slow the frame-rate when hit.
 	 */
@@ -169,7 +169,7 @@ public class Kirby extends Game implements LevelPlugin {
 	 * Read configuration of the programme from file. This is currently not
 	 * used. The source is based on iFlyCode/JavaPy's package involving. I
 	 * intend that it replace all the hardcoded sections.
-	 * 
+	 *
 	 * @author ifly6
 	 * @see iFlyCode/JavaPy
 	 * @see javapy.files.FileReading
@@ -204,6 +204,7 @@ public class Kirby extends Game implements LevelPlugin {
 				leftLegEndY = scan.nextInt();
 				Block = scan.nextInt();
 			}
+			scan.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -240,6 +241,7 @@ public class Kirby extends Game implements LevelPlugin {
 				initial.add(scan.nextInt());
 				initial.add(scan.nextInt());
 			}
+			scan.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -676,7 +678,7 @@ public class Kirby extends Game implements LevelPlugin {
 
 	/**
 	 * Timer to reset the JustHit variable.
-	 * 
+	 *
 	 * @author ifly6
 	 * @param justHit
 	 *            Must not be null. Is the period the system waits for you to be
@@ -699,10 +701,10 @@ public class Kirby extends Game implements LevelPlugin {
 					e.printStackTrace();
 				} catch (NullPointerException e) {
 					JOptionPane
-							.showMessageDialog(
-									null,
-									"Some developer has failed to include the resetSpeed "
-											+ "in the difficulty (or something) section. Complain to them.");
+					.showMessageDialog(
+							null,
+							"Some developer has failed to include the resetSpeed "
+									+ "in the difficulty (or something) section. Complain to them.");
 				}
 			}
 		}
