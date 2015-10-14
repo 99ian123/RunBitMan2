@@ -79,6 +79,7 @@ public class GameEntity implements Shape {
 	@Override
 	public boolean contains(double X, double Y, double doubleW,
 			double doubleH) {
+
 		int W = (int) doubleW;
 		int H = (int) doubleH;
 
